@@ -9,14 +9,20 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Angker')
 
 #load button images
-exit_img = pygame.image.load('exit_btn.png').convert_alpha()
-restart_img = pygame.image.load('restart_btn.png').convert_alpha()
+exit_img = pygame.image.load('assets/exit_btn.png').convert_alpha()
+restart_img = pygame.image.load('assets/restart_btn.png').convert_alpha()
 
 #background image
-blood_img = pygame.image.load('blood.png')
+blood_img = pygame.image.load('assets/blood_bg.png') #how to make this more efficient?
+grey_img = pygame.image.load('assets/grey_bg.jpg')
 def Background_blood(image):
     size = pygame.transform.scale(image, (1000, 736))
     screen.blit(size, (0, 0)) #position change
+
+def Background_grey(image):
+    size = pygame.transform.scale(image, (1000, 736))
+    screen.blit(size, (250, 35)) #how to efficiently change position
+
 
 #create button instances
 exit_button = button.Button(1360, 10, exit_img, 1.1)
@@ -34,6 +40,7 @@ while run:
         run = False
         print('EXIT')
 
+    Background_grey(grey_img)
     Background_blood(blood_img)
 
     #event handler
