@@ -12,7 +12,7 @@ WHITE = (250, 250, 250)
 FPS = 60
 SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 100, 125 #Kite define size dia
 
-HANTU_IMAGE = pygame.image.load(os.path.join('hantu.jpeg'))
+HANTU_IMAGE = pygame.image.load(os.path.join('assets/hantu.jpeg'))
 HANTU_IMAGE = pygame.transform.scale(HANTU_IMAGE, (SPACESHIP_WIDTH, SPACESHIP_HEIGHT))#untuk resize
 
 def draw_window():
