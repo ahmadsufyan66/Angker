@@ -20,7 +20,10 @@ def draw_window():
     WIN.blit(HANTU_IMAGE, (300, 100))#ni utk appearkan spaceship tu kat screen
     pygame.display.update()#kene update baru colour tu tukar
 
+
+
 def main():
+
     clock = pygame.time.Clock()
     run = True
     while run:
@@ -30,7 +33,7 @@ def main():
                 run = False
 
         draw_window()#kite call colour yg kite define kat atas
-        
+
     pygame.quit()#untuk start game and kalu kite tutup pygame end
 
 if __name__ == "__main__":
