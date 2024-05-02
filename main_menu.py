@@ -64,6 +64,7 @@ while run:
     if start_button.draw(screen):
         print('START')
     if exit_button.draw(screen):
+        run = False
         print('EXIT')
 
     #event handler
