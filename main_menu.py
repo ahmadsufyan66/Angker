@@ -43,8 +43,8 @@ class Button():
 
 
 #create button instances
-start_button = button.Button(300, 400, start_img, 1.30)
-exit_button = button.Button(950, 400, exit_img, 0.5)
+start_button = button.Button(300, 450, start_img, 1.30)
+exit_button = button.Button(950, 450, exit_img, 0.5)
 
 text_font = pygame.font.Font("arial.ttf", 100)
 
@@ -64,6 +64,7 @@ while run:
     if start_button.draw(screen):
         print('START')
     if exit_button.draw(screen):
+        run = False
         print('EXIT')
 
     #event handler
