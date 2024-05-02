@@ -50,3 +50,9 @@ while running:
             pygame.quit()
 
     index = 0
+    for image in images:
+        screen.blit(image, boxes[index])
+        index += 1
+
+    pygame.display.update()
+    
