@@ -9,6 +9,9 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Button Demo')
 pygame.init()
 
+#Background
+background = pygame.image.load('background image.png')
+
 #load button images
 start_img = pygame.image.load('start_btn-removebg-preview.png').convert_alpha()
 exit_img = pygame.image.load('exit_btn-removebg-preview.png').convert_alpha()
@@ -59,8 +62,10 @@ run = True
 while run:
 
     screen.fill((255, 20, 255))
+    #Background Image
+    screen.blit(background, (0, 0))
 
-    draw_text("MAIN MENU", text_font, (0, 0, 0), 400, 600)
+    draw_text("MAIN MENU", text_font, (255, 0, 0), 400, 600)
 
     if start_button.draw(screen):
         print('START')
