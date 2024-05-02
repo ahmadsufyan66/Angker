@@ -40,3 +40,13 @@ while running:
                 for num, box in enumerate(boxes):
                     if box.collidepoint(event.pos):
                         active_box = num
+
+        if event.type == pygame.MOUSEMOTION:
+            if active_box != None:
+                boxes[active_box].move_ip(event.rel)
+
+        if event.type == pygame.QUIT:
+
+            pygame.quit()
+
+    index = 0
