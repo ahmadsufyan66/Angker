@@ -1,6 +1,11 @@
 import pygame
 import button
 import random
+import sys
+from subprocess import call
+
+def open_combat_page():
+    call(('python', "combat_page.py"))
 
 #create display window
 SCREEN_HEIGHT = 810
@@ -15,7 +20,7 @@ restart_img = pygame.image.load('assets/restart_btn.png').convert_alpha()
     
 #background image
 blood_img = pygame.image.load('assets/blood_bg.png') #how to make this more efficient?
-grey_img = pygame.image.load('assets/grey_bg.jpg')
+grey_img = pygame.image.load('assets/grey_bg.jpg')  
 def bg_blood(image):
     size = pygame.transform.scale(image, (1000, 736))
     screen.blit(size, (0, 0)) #position change
@@ -51,6 +56,8 @@ while run:
     screen.fill((59,59,59))
 
     if restart_button.draw(screen):
+        open_combat_page()
+        run = False
         print('RESTART')
     if exit_button.draw(screen):
         run = False
@@ -81,7 +88,7 @@ while run:
                 boxes[active_box].move_ip(event.rel)
 
         if event.type == pygame.QUIT:
-            running = False    
+            run = False    
             pygame.quit()
             sys.exit()
 
