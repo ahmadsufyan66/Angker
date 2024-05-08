@@ -69,10 +69,6 @@ class Player(object):
         self.name = name
         self.hand = []
 
-    def sayHello(self):
-        print("Hi! My name is {}".format(self.name))
-        return self
-
     # Draw n number of cards from a deck
     # Returns true in n cards are drawn, false if less then that
     def draw(self, deck, num=1):
@@ -102,6 +98,5 @@ myDeck.shuffle()
 # deck.show()
 
 aqil = Player("Aqil")
-aqil.sayHello()
 aqil.draw(myDeck, 5)
 aqil.showHand()
