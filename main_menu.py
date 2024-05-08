@@ -1,5 +1,6 @@
 import pygame
 import button
+from subprocess import call
 
 #create main menu window
 SCREEN_WIDTH , SCREEN_HEIGHT = 1680, 1050
@@ -7,6 +8,9 @@ SCREEN_WIDTH , SCREEN_HEIGHT = 1680, 1050
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Button Demo')
 pygame.init()
+
+#Background
+background = pygame.image.load('background image.png')
 
 #load button images
 start_img = pygame.image.load('start_btn-removebg-preview.png').convert_alpha()
@@ -58,11 +62,18 @@ run = True
 while run:
 
     screen.fill((255, 20, 255))
+    #Background Image
+    screen.blit(background, (0, 0))
 
-    draw_text("MAIN MENU", text_font, (0, 0, 0), 400, 600)
+    draw_text("MAIN MENU", text_font, (255, 0, 0), 400, 600)
 
     if start_button.draw(screen):
         print('START')
+        def open_combat_page():
+            call(('python', "combat_page.py"))
+
+        open_combat_page()
+
     if exit_button.draw(screen):
         run = False
         print('EXIT')
