@@ -79,15 +79,14 @@ while run:
 
     if back_button.draw(screen):
         pygame.mixer.music.stop()
+        call (('python', 'main_menu.py'))
         print('BACK')
 
     if retry_button.draw(screen):
         pygame.mixer.music.stop()
+        call (('python', 'test game(ieman).py'))
         print('RETRY')
-        def open_combat_page():
-            call(('python', "combat_page.py"))
-
-        open_combat_page()
+        
 
     #event handler
     for event in pygame.event.get():
