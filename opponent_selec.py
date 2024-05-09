@@ -54,19 +54,19 @@ while run:
         print('EXIT')
 
     if bomoh1_button.draw(screen):
-        call(('python', "combat_page.py"))
+        call(('python', "test game(ieman).py"))
         print('OPEN COMBAT PAGE')
 
     if bomoh2_button.draw(screen):
-        call(('python', "combat_page.py"))
+        call(('python', "test game(ieman).py"))
         print('OPEN COMBAT PAGE')
 
     if bomoh3_button.draw(screen):
-        call(('python', "combat_page.py"))
+        call(('python', "test game(ieman).py"))
         print('OPEN COMBAT PAGE')
 
     if bomoh4_button.draw(screen):
-        call(('python', "combat_page.py"))
+        call(('python', "test game(ieman).py"))
         print('OPEN COMBAT PAGE')
 
     #event handler
