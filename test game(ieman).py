@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 # Initialize Pygame
 pygame.init()
@@ -31,7 +32,19 @@ class Player:
         self.hand = []
         self.life_points = 8000
 
-    def draw_card(self):
+    #------------------------------------------#
+    def shuffle(self, num=1):
+        length = len(self.deck)
+        for _ in range(num):
+            # This is the fisher yates shuffle algorithm
+            for i in range(length-1, 0, -1):
+                randi = random.randint(0, i)
+                if i == randi:
+                    continue
+                self.deck[i], self.deck[randi] = self.deck[randi], self.deck[i]
+    #------------------------------------------#
+
+    def draw_card(self, num=1):
         if self.deck:
             card = self.deck.pop()
             self.hand.append(card)
@@ -68,6 +81,10 @@ cards_data = [
 for card_data in cards_data:
     player1.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
     player2.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
+
+#Shuffle deck
+player1.shuffle()
+player2.shuffle()
 
 # Game loop
 running = True
