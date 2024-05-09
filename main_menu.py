@@ -69,10 +69,7 @@ while run:
 
     if start_button.draw(screen):
         print('START')
-        def open_combat_page():
-            call(('python', "combat_page.py"))
-
-        open_combat_page()
+        call(('python', "opponent_selec.py"))
 
     if exit_button.draw(screen):
         run = False
