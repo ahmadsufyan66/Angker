@@ -25,8 +25,9 @@ class Card:
 
 # Define Player class
 class Player:
-    def __init__(self, name):
+    def __init__(self, name, is_human):
         self.name = name
+        self.is_human = is_human
         self.deck = []
         self.hand = []
         self.life_points = 8000
@@ -45,14 +46,20 @@ class Player:
                 opponent.life_points -= card.attack
             return card
         return None
+    
+    def ai_play(self, opponent):
+        if self.hand:
+            card_index = random.randint(0, len(self.hand) - 1)
+            return self.play_card(card_index, opponent)
+        return None
 
 # Create display window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('TCG Game')
 
 # Create players
-player1 = Player("Player 1")
-player2 = Player("Player 2")
+player1 = Player("Player 1",True)#human
+player2 = Player("Player 2",False)#ai
 
 # Load card images
 card_images = ["card_images/Card1.png", "card_images/Card2.png", "card_images/Card3.png"]
@@ -69,8 +76,9 @@ for card_data in cards_data:
     player1.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
     player2.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
 
-# Game loop
+#Game loop
 running = True
+player1_turn = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -78,9 +86,16 @@ while running:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+          if event.key == pygame.K_SPACE and player1_turn:
                 player1.draw_card()
+                player1_turn = False
+                print(f"{player1.name} draws a card.")
+        elif event.key == pygame.K_SPACE and not player1_turn:
                 player2.draw_card()
+                player1_turn = True
+                print(f"{player2.name} draws a card.")
+
+
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if player1.name == "Player 1":
                 for i, card in enumerate(player1.hand):
