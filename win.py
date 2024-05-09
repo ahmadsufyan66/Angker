@@ -1,5 +1,6 @@
 import pygame
 import button
+from subprocess import call
 
 #Create win window
 SCREEN_WIDTH , SCREEN_HEIGHT = 1680, 1050
@@ -83,6 +84,10 @@ while run:
     if retry_button.draw(screen):
         print('RETRY')
         pygame.mixer.music.stop()
+        def open_combat_page():
+            call(('python', "combat_page.py"))
+
+        open_combat_page()
 
     #event handler
     for event in pygame.event.get():
