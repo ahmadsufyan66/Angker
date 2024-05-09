@@ -1,11 +1,12 @@
 import pygame
 import button
+from subprocess import call
 
-#Create win window
+#Create lose window
 SCREEN_WIDTH , SCREEN_HEIGHT = 1680, 1050
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('win page')
+pygame.display.set_caption('lose page')
 pygame.init()
 
 #Background music 
@@ -78,11 +79,14 @@ while run:
 
     if back_button.draw(screen):
         pygame.mixer.music.stop()
+        call (('python', 'main_menu.py'))
         print('BACK')
 
     if retry_button.draw(screen):
         pygame.mixer.music.stop()
+        call (('python', 'test game(ieman).py'))
         print('RETRY')
+        
 
     #event handler
     for event in pygame.event.get():
