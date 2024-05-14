@@ -2,19 +2,24 @@ import pygame
 import button
 from subprocess import call
 
-#create main menu window
+#Create lose window
 SCREEN_WIDTH , SCREEN_HEIGHT = 1680, 1050
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('Button Demo')
+pygame.display.set_caption('lose page')
 pygame.init()
 
-#Background
-background = pygame.image.load('background image.png')
+#Background music 
+pygame.mixer.pre_init(44100, 16, 2, 4096)
+pygame.init()
+
+#Background image
+background = pygame.image.load('lose_background.png')
+scale_bg = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 #load button images
-start_img = pygame.image.load('start_btn-removebg-preview.png').convert_alpha()
-exit_img = pygame.image.load('exit_btn-removebg-preview.png').convert_alpha()
+back_img = pygame.image.load('back-removebg-preview.png').convert_alpha()
+retry_img = pygame.image.load('retry_button-removebg-preview.png').convert_alpha()
 
 #button class
 class Button():
@@ -45,17 +50,21 @@ class Button():
 
         return action 
 
-
 #create button instances
-start_button = button.Button(300, 450, start_img, 1.30)
-exit_button = button.Button(950, 450, exit_img, 0.5)
+back_button = button.Button(400, 540, back_img, 0.9)
+retry_button = button.Button(950, 450, retry_img, 0.85)
 
-text_font = pygame.font.Font("arial.ttf", 100)
+text_font = pygame.font.Font("GOODDC__.TTF", 200)
 
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
     text_rect = img.get_rect(center=(840, 250))
     screen.blit(img, text_rect)
+
+#Play background music
+pygame.mixer.music.load("Undertale OST 085  Fallen Down Reprise.mp3")
+pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.play(-1)
 
 #game loop
 run = True
@@ -63,17 +72,22 @@ while run:
 
     screen.fill((255, 20, 255))
     #Background Image
-    screen.blit(background, (0, 0))
+    screen.blit(scale_bg, (0, 0))
 
-    draw_text("MAIN MENU", text_font, (255, 0, 0), 400, 600)
+    draw_text("YOU LOSE", text_font, (255, 0, 0), 400, 600)
 
-    if start_button.draw(screen):
-        print('START')
-        call(('python', "opponent_selec.py"))
 
-    if exit_button.draw(screen):
-        run = False
-        print('EXIT')
+    if back_button.draw(screen):
+        pygame.mixer.music.stop()
+        print('BACK')
+
+    if retry_button.draw(screen):
+        pygame.mixer.music.stop()
+        print('RETRY')
+        def open_combat_page():
+            call (('python', 'combat_page_py'))
+
+        open_combat_page()
 
     #event handler
     for event in pygame.event.get():
