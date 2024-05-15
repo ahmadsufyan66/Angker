@@ -26,8 +26,9 @@ class Card:
 
 # Define Player class
 class Player:
-    def __init__(self, name):
+    def __init__(self, name, is_human):
         self.name = name
+        self.is_human = is_human
         self.deck = []
         self.hand = []
         self.life_points = 8000
@@ -58,14 +59,20 @@ class Player:
                 opponent.life_points -= card.attack
             return card
         return None
+    
+    def ai_play(self, opponent):
+        if self.hand:
+            card_index = random.randint(0, len(self.hand) - 1)
+            return self.play_card(card_index, opponent)
+        return None
 
 # Create display window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('TCG Game')
 
 # Create players
-player1 = Player("Player 1")
-player2 = Player("Player 2")
+player1 = Player("Player 1",True)#human
+player2 = Player("Player 2",False)#ai
 
 # Load card images
 card_images = ["card_images/Card1.png", "card_images/Card2.png", "card_images/Card3.png"]
@@ -88,6 +95,8 @@ player2.shuffle()
 
 # Game loop
 running = True
+turn_counter = 0  # Initialize turn counter
+player1_turn = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -95,23 +104,38 @@ while running:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_SPACE and turn_counter < 3:  # Only draw cards for the first three spacebar presses
                 player1.draw_card()
                 player2.draw_card()
+                turn_counter += 1  # Increment turn counter
+                print(f"{player1.name} and {player2.name} draw a card.")
+            elif event.key == pygame.K_SPACE and turn_counter == 3:  # On the fourth spacebar press, allow player 1 to play a card
+                player1_turn = True
+
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if player1.name == "Player 1":
+            if player1.name == "Player 1" and player1_turn:
                 for i, card in enumerate(player1.hand):
                     if card.rect.collidepoint(event.pos):
                         card.is_dragging = True
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-            for i, card in enumerate(player1.hand):
-                if card.is_dragging:
-                    card.is_dragging = False
-                    card.rect.center = (50 + i * 120 + 50, SCREEN_HEIGHT - 170)  # Reset card position
-                    played_card = player1.play_card(i, player2)
-                    if played_card:
-                        print(f"{player1.name} plays {played_card.name}.")
-                        print(f"{player2.name} has {player2.life_points} life points remaining.")
+            if player1.name == "Player 1" and player1_turn:  # Only play card if it's player 1's turn
+                for i, card in enumerate(player1.hand):
+                    if card.is_dragging:
+                        card.is_dragging = False
+                        card.rect.center = (50 + i * 120 + 50, SCREEN_HEIGHT - 170)  # Reset card position
+                        played_card = player1.play_card(i, player2)
+                        if played_card:
+                            print(f"{player1.name} plays {played_card.name}.")
+                            print(f"{player2.name} has {player2.life_points} life points remaining.")
+                        player1_turn = False  # End player 1's turn
+
+    # AI player's turn
+    if not player1_turn and turn_counter == 3:  # Only let AI play after player 1's turn and all cards have been drawn
+        played_card = player2.ai_play(player1)
+        if played_card:
+            print(f"{player2.name} plays {played_card.name}.")
+            print(f"{player1.name} has {player1.life_points} life points remaining.")
+        player1_turn = True  # End AI player's turn
 
     # Update card positions if dragging
     mouse_pos = pygame.mouse.get_pos()
@@ -144,6 +168,8 @@ while running:
 
 # Quit Pygame
 pygame.quit()
+
+
 
 
 
