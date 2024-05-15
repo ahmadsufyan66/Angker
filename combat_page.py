@@ -42,7 +42,7 @@ images = []
 
 for i in range(0, 1):
     x, y = random.randint(1, 100), random.randint(1, 200)
-    temp_img = pygame.image.load("card_images/Card1.png").convert_alpha()
+    temp_img = pygame.image.load("assets/attack_card.png").convert_alpha()
     image = pygame.transform.scale(temp_img, (100,100))
     object_rect = image.get_rect()
     object_rect.center = (x, y)
