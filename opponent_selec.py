@@ -50,6 +50,7 @@ while run:
 
     #button
     if exit_button.draw(screen):
+        pygame.quit()
         call(('python', "main_menu.py"))
         print('EXIT')
 

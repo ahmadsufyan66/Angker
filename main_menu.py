@@ -1,13 +1,13 @@
 import pygame
 import button
 from subprocess import call
+pygame.init()
 
 #create main menu window
 SCREEN_WIDTH , SCREEN_HEIGHT = 1680, 1050
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Button Demo')
-pygame.init()
 
 #Background
 background = pygame.image.load('background image.png')
@@ -68,10 +68,12 @@ while run:
     draw_text("MAIN MENU", text_font, (255, 0, 0), 400, 600)
 
     if start_button.draw(screen):
+        pygame.quit()
         print('START')
         call(('python', "opponent_selec.py"))
 
     if exit_button.draw(screen):
+        pygame.quit()
         run = False
         print('EXIT')
 
