@@ -2,6 +2,7 @@ import pygame
 import random
 import sys
 import button
+from subprocess import call
 
 # Create display window
 SCREEN_HEIGHT = 810
@@ -12,16 +13,19 @@ pygame.display.set_caption('Angker')
 # Load button images
 exit_img = pygame.image.load('assets/exit_btn.png').convert_alpha()
 restart_img = pygame.image.load('assets/restart_btn.png').convert_alpha()
-button1_img = pygame.image.load('assets/button1.png').convert_alpha()
-button2_img = pygame.image.load('assets/button2.png').convert_alpha()
-button3_img = pygame.image.load('assets/button3.png').convert_alpha()
+
+#define colours
+BG = (50, 50, 50)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
 
 # Create button instances
 exit_button = button.Button(1360, 10, exit_img, 1.1)
 restart_button = button.Button(1420, 10, restart_img, 0.8)
-button1 = button.Button(100, 700, button1_img, 0.3)
-button2 = button.Button(600, 700, button2_img, 0.3)
-button3 = button.Button(1100, 700, button3_img, 0.3)
+
+#Create attacking area
+rect_1 = pygame.Rect(0, 0, 1535, 405)
 
 # Background images
 blood_img = pygame.image.load('assets/blood_bg.png')
@@ -41,8 +45,8 @@ boxes = []
 images = []
 
 for i in range(0, 1):
-    x, y = random.randint(1, 100), random.randint(1, 200)
-    temp_img = pygame.image.load("assets/attack_card.png").convert_alpha()
+    x, y = 767.5, 510
+    temp_img = pygame.image.load("card_images/Card1.png").convert_alpha()
     image = pygame.transform.scale(temp_img, (100,100))
     object_rect = image.get_rect()
     object_rect.center = (x, y)
@@ -56,24 +60,17 @@ run = True
 while run:
     screen.fill((59,59,59))
 
+    #Attacking area
+    pygame.draw.rect(screen, RED, rect_1)
+
+    #Restart and exit button
     if restart_button.draw(screen):
         run = False
         print('RESTART')
     if exit_button.draw(screen):
         run = False
         print('EXIT')
-    if button1.draw(screen):
-        print('Display Card 1')
-        # Display card 1 when button 1 is clicked
-
-    if button2.draw(screen):
-        print('Display Card 2')
-        # Display card 2 when button 2 is clicked
-
-    if button3.draw(screen):
-        print('Display Card 3')
-        # Display card 3 when button 3 is clicked
-
+    
     bg_blood(blood_img)
     bg_grey(grey_img)
 
@@ -88,14 +85,20 @@ while run:
                     if box.collidepoint(event.pos):
                         active_box = num
 
-        if event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:
-                active_box = None
-
         if event.type == pygame.MOUSEMOTION:
             if active_box != None:
                 boxes[active_box].move_ip(event.rel)
 
+        if event.type == pygame.MOUSEBUTTONUP:
+            if event.button == 1:
+
+                #Check collision
+                if object_rect.colliderect(rect_1):
+                    call(('python', "opponent_selec.py"))
+            
+                active_box = None
+
+    #Making cards appear on screen
     index = 0
     for image in images:
         screen.blit(image, boxes[index])

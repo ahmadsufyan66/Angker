@@ -1,4 +1,5 @@
 import pygame
+import pygame.time
 import sys
 import random
 from subprocess import call
@@ -48,8 +49,9 @@ class Player:
 
     def draw_card(self, num=1):
         if self.deck:
-            card = self.deck.pop()
-            self.hand.append(card)
+            for _ in range(3):
+                card = self.deck.pop()
+                self.hand.append(card)
 
     def play_card(self, card_index, opponent):
         if 0 <= card_index < len(self.hand):
@@ -63,6 +65,7 @@ class Player:
     
     def ai_play(self, opponent):
         if self.hand:
+            pygame.time.wait(2000)
             card_index = random.randint(0, len(self.hand) - 1)
             return self.play_card(card_index, opponent)
         return None
@@ -130,12 +133,12 @@ while running:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and turn_counter < 3:  # Only draw cards for the first three spacebar presses
+            if event.key == pygame.K_SPACE and turn_counter < 1:  # Only draw cards for the first three spacebar presses
                 player1.draw_card()
                 player2.draw_card()
                 turn_counter += 1  # Increment turn counter
                 print(f"{player1.name} and {player2.name} draw a card.")
-            elif event.key == pygame.K_SPACE and turn_counter == 3:  # On the fourth spacebar press, allow player 1 to play a card
+            elif event.key == pygame.K_SPACE and turn_counter == 1:  # On the fourth spacebar press, allow player 1 to play a card
                 player1_turn = True
 
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -171,7 +174,7 @@ while running:
 
 
     # AI player's turn
-    if not player1_turn and turn_counter == 3:  # Only let AI play after player 1's turn and all cards have been drawn
+    if not player1_turn and turn_counter == 1: # Only let AI play after player 1's turn and all cards have been drawn  
         played_card = player2.ai_play(player1)
         if played_card:
             print(f"{player2.name} plays {played_card.name}.")
@@ -206,27 +209,4 @@ while running:
 
 # Quit Pygame
 pygame.quit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
