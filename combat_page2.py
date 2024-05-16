@@ -85,6 +85,10 @@ while run:
                     if box.collidepoint(event.pos):
                         active_box = num
 
+        if event.type == pygame.MOUSEMOTION:
+            if active_box != None:
+                boxes[active_box].move_ip(event.rel)
+
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
 
@@ -94,10 +98,7 @@ while run:
             
                 active_box = None
 
-        if event.type == pygame.MOUSEMOTION:
-            if active_box != None:
-                boxes[active_box].move_ip(event.rel)
-
+    #Making cards appear on screen
     index = 0
     for image in images:
         screen.blit(image, boxes[index])
