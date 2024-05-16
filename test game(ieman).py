@@ -7,8 +7,8 @@ from subprocess import call
 pygame.init()
 
 # Screen dimensions
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1535
+SCREEN_HEIGHT = 810
 
 # Define colors
 WHITE = (255, 255, 255)
@@ -32,7 +32,7 @@ class Player:
         self.is_human = is_human
         self.deck = []
         self.hand = []
-        self.life_points = 8000
+        self.life_points = 80
 
     #------------------------------------------#
     def shuffle(self, num=1):
@@ -48,7 +48,7 @@ class Player:
 
     def draw_card(self, num=1):
         if self.deck:
-            card = self.deck.pop()
+            card = self.deck.pop(len(self.deck))
             self.hand.append(card)
 
     def play_card(self, card_index, opponent):
@@ -79,13 +79,15 @@ player2 = Player("Player 2",False)#ai
 rect_1 = pygame.Rect(0, 170, SCREEN_WIDTH, 270)
 
 # Load card images
-card_images = ["card_images/Card1.png", "card_images/Card2.png", "card_images/Card3.png"]
+card_images = ["card_images/Card1.png", "card_images/Card2.png", "card_images/Card3.png", "card_images/Card4.png", "card_images/Card5.png"]
 
 # Customize attack and defense for each card
 cards_data = [
-    {"name": "Card 1", "attack": 800, "defense": 700, "image": card_images[0]},
-    {"name": "Card 2", "attack": 1000, "defense": 900, "image": card_images[1]},
-    {"name": "Card 3", "attack": 1200, "defense": 1100, "image": card_images[2]}
+    {"name": "Card 1", "attack": 8, "defense": 7, "image": card_images[0]},
+    {"name": "Card 2", "attack": 10, "defense": 9, "image": card_images[1]},
+    {"name": "Card 3", "attack": 12, "defense": 11, "image": card_images[2]},
+    {"name": "Card 4", "attack": 12, "defense": 11, "image": card_images[3]},
+    {"name": "Card 5", "attack": 12, "defense": 11, "image": card_images[4]},
 ]
 
 # Populate decks with custom cards
