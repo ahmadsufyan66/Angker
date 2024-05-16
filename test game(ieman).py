@@ -48,7 +48,7 @@ class Player:
 
     def draw_card(self, num=1):
         if self.deck:
-            card = self.deck.pop(len(self.deck))
+            card = self.deck.pop()
             self.hand.append(card)
 
     def play_card(self, card_index, opponent):
