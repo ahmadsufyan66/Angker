@@ -94,7 +94,7 @@ while run:
 
                 #Check collision
                 if object_rect.colliderect(rect_1):
-                    call(('python', "opponent_selec.py"))
+                    print("Card 1 is played.")
             
                 active_box = None
 

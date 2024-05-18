@@ -65,7 +65,6 @@ class Player:
     
     def ai_play(self, opponent):
         if self.hand:
-            pygame.time.wait(2000)
             card_index = random.randint(0, len(self.hand) - 1)
             return self.play_card(card_index, opponent)
         return None
@@ -79,7 +78,7 @@ player1 = Player("Player 1",True)#human
 player2 = Player("Player 2",False)#ai
 
 ##Create attacking area
-rect_1 = pygame.Rect(0, 170, SCREEN_WIDTH, 270)
+rect_1 = pygame.Rect(0, 170, SCREEN_WIDTH, 490)
 
 # Load card images
 card_images = ["card_images/Card1.png", "card_images/Card2.png", "card_images/Card3.png", "card_images/Card4.png", "card_images/Card5.png"]
@@ -158,7 +157,7 @@ while running:
             if player1.name == "Player 1" and player1_turn:  # Only play card if it's player 1's turn
                 #Check collision
                 if object_rect.colliderect(rect_1):
-                    call(('python', "opponent_selec.py"))
+                    print("Card is played.")
             
                 active_box = None
                 for i, card in enumerate(player1.hand):

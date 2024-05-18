@@ -55,18 +55,22 @@ while run:
         print('EXIT')
 
     if bomoh1_button.draw(screen):
-        call(('python', "test game(ieman).py"))
-        print('OPEN COMBAT PAGE')
+        pygame.quit()
+        call(('python', "bomoh1.py"))
+        print('OPEN bomoh1.py')
 
     if bomoh2_button.draw(screen):
+        pygame.quit()
         call(('python', "test game(ieman).py"))
         print('OPEN COMBAT PAGE')
 
     if bomoh3_button.draw(screen):
+        pygame.quit()
         call(('python', "test game(ieman).py"))
         print('OPEN COMBAT PAGE')
 
     if bomoh4_button.draw(screen):
+        pygame.quit()
         call(('python', "test game(ieman).py"))
         print('OPEN COMBAT PAGE')
 
