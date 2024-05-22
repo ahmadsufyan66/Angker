@@ -79,11 +79,13 @@ while run:
 
     if back_button.draw(screen):
         pygame.mixer.music.stop()
+        pygame.quit()
         call (('python', 'main_menu.py'))
         print('BACK')
 
     if retry_button.draw(screen):
         pygame.mixer.music.stop()
+        pygame.quit()
         call (('python', 'test game(ieman).py'))
         print('RETRY')
         

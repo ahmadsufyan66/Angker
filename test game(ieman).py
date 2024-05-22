@@ -138,8 +138,12 @@ def render_dialogue(message, counter, speed):
 running = True
 turn_counter = 0  # Initialize turn counter
 player1_turn = True
+<<<<<<< HEAD
+while running:
+=======
 
 while running: 
+>>>>>>> main
 
     # Update card positions if dragging
     mouse_pos = pygame.mouse.get_pos()

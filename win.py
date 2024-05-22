@@ -1,5 +1,6 @@
 import pygame
 import button
+from subprocess import call
 
 #Create win window
 SCREEN_WIDTH , SCREEN_HEIGHT = 1680, 1050
@@ -79,10 +80,14 @@ while run:
     if back_button.draw(screen):
         print('BACK')
         pygame.mixer.music.stop()
+        pygame.quit()
+        call (('python', 'main_menu.py'))
 
     if retry_button.draw(screen):
         print('RETRY')
         pygame.mixer.music.stop()
+        pygame.quit()
+        call (('python', 'test game(ieman).py'))
 
     #event handler
     for event in pygame.event.get():
