@@ -1,9 +1,23 @@
 import pygame
 import sys
 import random
-
 # Initialize Pygame
 pygame.init()
+
+#font
+font = pygame.font.Font('GOODDC__.TTF', 40)
+
+#dialogue
+timer = pygame.time.Clock()
+messages = ('All of that for this? Reality is often dissappointing, isn\'t it?',
+            'Dread it, run from it, destiny arrives all the same, and YOU are no exception!',
+            'Isn\'t this a great text dialogue?')
+snip = font.render('', True, 'dark red')
+counter = 0
+speed = 3
+active_message = 0
+message = messages[active_message]
+done = False
 
 # Screen dimensions
 SCREEN_WIDTH = 1535
@@ -47,8 +61,9 @@ class Player:
 
     def draw_card(self, num=1):
         if self.deck:
-            card = self.deck.pop()
-            self.hand.append(card)
+            for _ in range(3):
+                card = self.deck.pop()
+                self.hand.append(card)
 
     def play_card(self, card_index, opponent):
         if 0 <= card_index < len(self.hand):
@@ -104,12 +119,12 @@ while running:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and turn_counter < 3:  # Only draw cards for the first three spacebar presses
+            if event.key == pygame.K_SPACE and turn_counter < 1:  # Only draw cards for the first three spacebar presses
                 player1.draw_card()
                 player2.draw_card()
                 turn_counter += 1  # Increment turn counter
                 print(f"{player1.name} and {player2.name} draw a card.")
-            elif event.key == pygame.K_SPACE and turn_counter == 3:  # On the fourth spacebar press, allow player 1 to play a card
+            elif event.key == pygame.K_SPACE and turn_counter == 1:  # On the fourth spacebar press, allow player 1 to play a card
                 player1_turn = True
 
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -128,9 +143,21 @@ while running:
                             print(f"{player1.name} plays {played_card.name}.")
                             print(f"{player2.name} has {player2.life_points} life points remaining.")
                         player1_turn = False  # End player 1's turn
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN and done and active_message < len(messages) - 1:
+                active_message += 1
+                done = False
+                message = messages[active_message]
+                counter = 0
+
+    snip = font.render(message[0:counter//speed], True, 'dark red')
+    screen.blit(snip, (310, 600))
 
     # AI player's turn
-    if not player1_turn and turn_counter == 3:  # Only let AI play after player 1's turn and all cards have been drawn
+    if not player1_turn and turn_counter == 1:  # Only let AI play after player 1's turn and all cards have been drawn
         played_card = player2.ai_play(player1)
         if played_card:
             print(f"{player2.name} plays {played_card.name}.")
