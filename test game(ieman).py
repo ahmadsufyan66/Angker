@@ -116,7 +116,7 @@ active_box = None
 running = True
 turn_counter = 0  # Initialize turn counter
 player1_turn = True
-while running: 
+while running:
 
     # Update card positions if dragging
     mouse_pos = pygame.mouse.get_pos()
