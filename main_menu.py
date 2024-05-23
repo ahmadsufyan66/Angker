@@ -1,10 +1,14 @@
 import pygame
-import button
-from subprocess import call
+
+# Initialize Pygame
 pygame.init()
 
+import button
+from subprocess import call
+
+
 #create main menu window
-SCREEN_WIDTH , SCREEN_HEIGHT = 1680, 1050
+SCREEN_WIDTH , SCREEN_HEIGHT = 1535, 810
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Button Demo')
