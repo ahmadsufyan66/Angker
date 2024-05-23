@@ -1,10 +1,13 @@
 import pygame
+
+# Initialize Pygame
+pygame.init()
+
 import sys
 import random
 from subprocess import call
 
-# Initialize Pygame
-pygame.init()
+
 
 # Font
 dialogue_font = pygame.font.Font('GOODDC__.TTF', 40)
@@ -91,7 +94,7 @@ player1 = Player("Player 1", True)  # human
 player2 = Player("Player 2", False)  # ai
 
 # Create attacking area
-rect_1 = pygame.Rect(0, 170, SCREEN_WIDTH, 270)
+rect_1 = pygame.Rect(0, 170, SCREEN_WIDTH, 490)
 
 # Load card images
 card_images = ["card_images/Card1.png", "card_images/Card2.png", "card_images/Card3.png", "card_images/Card4.png", "card_images/Card5.png"]
@@ -138,12 +141,8 @@ def render_dialogue(message, counter, speed):
 running = True
 turn_counter = 0  # Initialize turn counter
 player1_turn = True
-<<<<<<< HEAD
-while running:
-=======
 
 while running: 
->>>>>>> main
 
     # Update card positions if dragging
     mouse_pos = pygame.mouse.get_pos()
@@ -157,7 +156,7 @@ while running:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and turn_counter < 1:  # Only draw cards for the first spacebar presses
+            if event.key == pygame.K_SPACE and turn_counter < 1:  # Only draw cards for the first spacebar presse
                 player1.draw_card()
                 player2.draw_card()
                 turn_counter += 1  # Increment turn counter
@@ -202,7 +201,7 @@ while running:
                                 dialogue_active = True
                                 active_message = 1
                                 counter = 0
-                        player1_turn = False  # End player 1's turn
+                            player1_turn = False  # End player 1's turn                    
         
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -219,6 +218,7 @@ while running:
                 active_message = 0
                 counter = 0
         player1_turn = True  # End AI player's turn
+
 
     # Draw background
     screen.fill(WHITE)

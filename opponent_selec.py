@@ -1,4 +1,8 @@
 import pygame
+
+# Initialize Pygame
+pygame.init()
+
 import button
 from subprocess import call
 
