@@ -1,3 +1,4 @@
+# Import required libraries
 import pygame
 import sys
 import random
@@ -12,8 +13,8 @@ dialogue_font = pygame.font.Font('GOODDC__.TTF', 40)
 # Dialogue
 timer = pygame.time.Clock()
 messages = [
-    'All of that for this? Reality is often disappointing, isn\'t it?(press enter to continue)',
-    'Dread it, run from it, destiny arrives all the same, and YOU are no exception!(press enter to continue)',
+    'All of that for this? Reality is often disappointing, isn\'t it?   (press enter to continue)',
+    'Dread it, run from it, destiny arrives all the same, and YOU are no exception!   (press enter to continue)',
     'Isn\'t this a great text dialogue?'
 ]
 snip = dialogue_font.render('', True, 'dark red')
@@ -30,10 +31,11 @@ SCREEN_HEIGHT = 810
 # Define colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+RED = (255, 0 ,0)
 
 # Define Card class
 class Card:
-    def __init__(self, name, attack, defense, image):
+    def __init__(self, name, attack, defense, image, randomize_effect=None):
         self.name = name
         self.attack = attack
         self.defense = defense
@@ -41,6 +43,9 @@ class Card:
         self.image = pygame.transform.scale(self.image, (100, 150))
         self.rect = self.image.get_rect()
         self.is_dragging = False
+        self.randomize_effect = randomize_effect
+        self.click_count = 0  # Initialize click count attribute
+
 
 # Define Player class
 class Player:
@@ -73,6 +78,9 @@ class Player:
                 opponent.life_points = 0
             else:
                 opponent.life_points -= card.attack
+            # Check for trigger effect
+            if card.randomize_effect:
+                card.randomize_effect(self, opponent)
             return card
         return None
     
@@ -81,6 +89,54 @@ class Player:
             card_index = random.randint(0, len(self.hand) - 1)
             return self.play_card(card_index, opponent)
         return None
+
+# Button class
+class Button:
+    def __init__(self, text, pos, size, font, bg="black", fg="white"):
+        self.x, self.y = pos
+        self.width, self.height = size
+        self.font = font
+        self.bg = bg
+        self.fg = fg
+        self.text = text
+        self.image = font.render(text, True, self.fg)
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.image_rect = self.image.get_rect(center=self.rect.center)
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.bg, self.rect)
+        screen.blit(self.image, self.image_rect)
+
+    def is_clicked(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.rect.collidepoint(event.pos):
+                return True
+        return False
+
+
+# Create randomize button
+randomize_button_font = pygame.font.Font(None, 36)
+randomize_button = Button("Randomize Effect", (SCREEN_WIDTH - 250, SCREEN_HEIGHT - 100), (220, 50), randomize_button_font, bg=RED, fg=WHITE)
+
+
+# Define a function to handle the randomization of the effect
+def randomize_effect(player, opponent):
+    # Randomly choose between doubling attack or healing +10
+    choice = random.choice(["more_attack", "heal"])
+    if choice == "more_attack":
+        # increase the attack of the first card in player's hand
+        if player.hand:
+            card_attack = 10 + player.hand[0].attack
+            opponent.life_points -= card_attack
+            print(f"{player.name} plus 10 attack with {player.hand[0].name}!")
+            print(f"{opponent.name} has {opponent.life_points} life points remaining.")
+    elif choice == "heal":
+        # Heal +10 to the player
+        player.life_points += 10
+        print(f"{player.name} heals 10 life points!")
+
+
+
 
 # Create display window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -98,17 +154,17 @@ card_images = ["card_images/Card1.png", "card_images/Card2.png", "card_images/Ca
 
 # Customize attack and defense for each card
 cards_data = [
-    {"name": "Card 1", "attack": 20, "defense": 7, "image": card_images[0]},
+    {"name": "Card 1", "attack": 20, "defense": 7, "image": card_images[0]},#,"trigger_effect": randomize_effect},
     {"name": "Card 2", "attack": 20, "defense": 9, "image": card_images[1]},
     {"name": "Card 3", "attack": 20, "defense": 11, "image": card_images[2]},
     {"name": "Card 4", "attack": 20, "defense": 11, "image": card_images[3]},
-    {"name": "Card 5", "attack": 20, "defense": 11, "image": card_images[4]},
+    {"name": "Card 5", "attack": 20, "defense": 11, "image": card_images[4]},  # Trigger card example
 ]
 
 # Populate decks with custom cards
 for card_data in cards_data:
-    player1.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
-    player2.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
+    player1.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("randomize_effect")))
+    player2.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("randomize_effect")))
 
 # Shuffle deck
 player1.shuffle()
@@ -131,20 +187,17 @@ active_box = None
 def render_dialogue(message, counter, speed):
     if counter < speed * len(message):
         counter += 1
-    snip = font.render(message[:counter // speed], True, 'dark red')
+    snip = dialogue_font.render(message[:counter // speed], True, 'dark red')
     return snip, counter
 
 # Game loop
 running = True
 turn_counter = 0  # Initialize turn counter
 player1_turn = True
-<<<<<<< HEAD
-while running:
-=======
+randomize_button_clicks = 0
+randomize_button_visible = True
 
 while running: 
->>>>>>> main
-
     # Update card positions if dragging
     mouse_pos = pygame.mouse.get_pos()
     for i, card in enumerate(player1.hand):
@@ -164,7 +217,7 @@ while running:
                 print(f"{player1.name} and {player2.name} draw a card.")
             elif event.key == pygame.K_SPACE and turn_counter == 1:  # On the second spacebar press, allow player 1 to play a card
                 player1_turn = True
-            elif event.key == pygame.K_RETURN and done and dialogue_active:
+            elif event.key == pygame.K_RETURN and event.key == pygame.K_RETURN and done and dialogue_active:
                 dialogue_active = False
                 active_message = None
                 counter = 0
@@ -172,6 +225,13 @@ while running:
 
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if player1_turn:
+                # Check if randomize button is clicked
+                if randomize_button.is_clicked(event):
+                    if randomize_button_clicks < 3:
+                        randomize_effect(player1, player2)
+                        randomize_button_clicks += 1
+                    else:
+                        print("Randomize button has been used maximum number of times!")
                 for num, box in enumerate(boxes):
                     if box.collidepoint(event.pos):
                         active_box = num
@@ -204,6 +264,18 @@ while running:
                                 counter = 0
                         player1_turn = False  # End player 1's turn
         
+        # Handle button click for randomizing attack or healing
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if player1_turn and randomize_button_visible:
+                # Check if randomize button is clicked
+                if randomize_button.is_clicked(event):
+                    if randomize_button_clicks < 3:
+                        randomize_effect(player1, player2)
+                        randomize_button_clicks += 1
+                        if randomize_button_clicks == 3:
+                            # Hide the randomize button after 3 clicks
+                            randomize_button_visible = False
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -252,42 +324,25 @@ while running:
             done = True
 
     # If player 1 wins
-    if player2.life_points == 0:
+    if player2.life_points <= 0:
         pygame.quit()
         call (('python', 'win.py'))
 
     # If player 1 loses
-    if player1.life_points == 0:
+    if player1.life_points <= 0:
         pygame.quit()
         call (('python', 'lose.py'))
+
+    # Draw the randomize button
+    randomize_button.draw(screen)
+
+    pygame.display.flip()
+
+    if randomize_button_visible:
+            randomize_button.draw(screen)
 
     pygame.display.flip()
 
 # Quit Pygame
 pygame.quit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
