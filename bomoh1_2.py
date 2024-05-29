@@ -92,17 +92,20 @@ class Player:
                 self.trigger_hand.append(card)
 
     def play_card(self, card_index, opponent):
-        if 0 <= card_index < len(self.hand):
-            card = self.hand.pop(card_index)
-            if card.attack > opponent.life_points:
-                opponent.life_points = 0
-            else:
-                opponent.life_points -= card.attack
-            return card
-        return None
-    
+        card = self.hand.pop(card_index)
+        trigger_card = self.trigger_hand.pop(card_index)
+        
+            if 0 <= card_index < len(self.hand):
+                if card.attack > opponent.life_points:
+                    opponent.life_points = 0
+                else:
+                    opponent.life_points -= card.attack
+                return card
+            return None
+        
     #Trigger card play function
     def play_trigger_card(self, card_index, opponent):
+        trigger_card = self.trigger_hand.pop(card_index)
         if 0 <= card_index < len(self.trigger_hand):
             if card.attack == 2:
                 opponent.life_points -= card.attack
@@ -143,8 +146,7 @@ cards_data = [{"name": "Trigger Attack", "attack": 2, "defense": 0, "image": car
               {"name": "Card 2", "attack": 30, "defense": 9, "image": card_images[4]},
               {"name": "Card 3", "attack": 30, "defense": 11, "image": card_images[5]},
               {"name": "Card 4", "attack": 20, "defense": 11, "image": card_images[6]},
-              {"name": "Card 5", "attack": 20, "defense": 11, "image": card_images[7]},
-              
+              {"name": "Card 5", "attack": 20, "defense": 11, "image": card_images[7]},    
 ]
 
 # Populate decks with custom cards
@@ -246,18 +248,6 @@ while running:
                                 active_message = 1
                                 counter = 0
                             player1_turn = False
-                            
-#                            #Choosing trigger card
-#                            for i, card in enumerate(player1.trigger_hand):
-#                                if card.is_dragging:
-#                                    card.is_dragging = False
-#                                    card.rect.center = (50 + i * 120 + 50, SCREEN_HEIGHT - 170)  # Reset card position
-#                                    played_trigger_card = player1.play_trigger_card(i, player2)
-#                                    if played_trigger_card:
-#                                        print(f"{player1.name} plays {played_trigger_card.name}.")
-#                                        print(f"{player2.name} has {player2.life_points} life points remaining.")
-#                                    player1_turn = False  # End player 1's turn
-                                    
                             
 
 
