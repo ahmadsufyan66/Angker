@@ -197,16 +197,10 @@ def render_dialogue(message, counter, speed):
 running = True
 turn_counter = 0  # Initialize turn counter
 player1_turn = True
-<<<<<<< HEAD
 randomize_button_clicks = 0
 randomize_button_visible = True
 
 while running: 
-=======
-
-while running: 
-
->>>>>>> main
     # Update card positions if dragging
     mouse_pos = pygame.mouse.get_pos()
     for i, card in enumerate(player1.hand):
