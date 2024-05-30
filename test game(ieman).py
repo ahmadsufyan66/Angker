@@ -225,6 +225,7 @@ def render_dialogue(message, counter, speed):
 running = True
 turn_counter = 0  # Initialize turn counter
 player1_turn = True
+
 randomize_button_clicks = 0
 randomize_button_visible = True
 
