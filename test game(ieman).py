@@ -61,6 +61,7 @@ class Player:
         self.name = name
         self.is_human = is_human
         self.deck = []
+        self.skill_deck = []
         self.hand = []
         self.life_points = 80
 
@@ -73,11 +74,27 @@ class Player:
                     continue
                 self.deck[i], self.deck[randi] = self.deck[randi], self.deck[i]
 
+        #Shuffle skill card deck
+        length = len(self.skill_deck)
+        for _ in range(num):
+            # This is the fisher yates shuffle algorithm
+            for i in range(length-1, 0, -1):
+                randi = random.randint(0, i)
+                if i == randi:
+                    continue
+                self.skill_deck[i], self.skill_deck[randi] = self.skill_deck[randi], self.skill_deck[i]
+
     def draw_card(self):
         if self.deck:
-            for _ in range(3):
+            for _ in range(2):
                 card = self.deck.pop()
                 self.hand.append(card)
+        
+        if self.skill_deck:
+            for _ in range(1):
+                card = self.skill_deck.pop()
+                self.hand.append(card)
+
 
     def play_card(self, card_index, opponent):
         if 0 <= card_index < len(self.hand):
@@ -118,7 +135,7 @@ player2 = Player("Player 2", False)  # ai
 rect_1 = pygame.Rect(0, 170, SCREEN_WIDTH, 490)
 
 # Load card images
-card_images = ["card_images/Card1.png", "card_images/Card2.png", "card_images/Card3.png", "card_images/Card4.png", "card_images/Card5.png"]
+card_images = ["card_images/Card1.png", "card_images/Card2.png", "card_images/Card3.png", "card_images/Card4.png", "card_images/Card5.png", "card_images/skill_card.jpg"]
 
 # Customize attack and defense for each card
 cards_data = [
@@ -133,6 +150,12 @@ cards_data = [
 for card_data in cards_data:
     player1.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("trigger_effect")))
     player2.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("trigger_effect")))
+
+#Populate skill card decks
+for card_data in cards_data[5:]:
+    player1.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
+    player2.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
+
 
 # Shuffle deck
 player1.shuffle()
