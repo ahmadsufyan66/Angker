@@ -89,7 +89,7 @@ while run:
     if retry_button.draw(screen):
         pygame.mixer.music.stop()
         pygame.quit()
-        call (('python', 'test game(ieman).py'))
+        call (('python', 'bomoh1.py'))
         print('RETRY')
         
 

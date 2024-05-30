@@ -81,13 +81,13 @@ while run:
         print('BACK')
         pygame.mixer.music.stop()
         pygame.quit()
-        call (('python', 'main_menu.py'))
+        call (('python', 'opponent_selec.py'))
 
     if retry_button.draw(screen):
         print('RETRY')
         pygame.mixer.music.stop()
         pygame.quit()
-        call (('python', 'test game(ieman).py'))
+        call (('python', 'bomoh1.py'))
 
     #event handler
     for event in pygame.event.get():
