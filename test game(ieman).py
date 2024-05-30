@@ -198,7 +198,13 @@ running = True
 turn_counter = 0  # Initialize turn counter
 player1_turn = True
 
+randomize_button_clicks = 0
+randomize_button_visible = True
+
+
+
 while running: 
+
 
     # Update card positions if dragging
     mouse_pos = pygame.mouse.get_pos()
