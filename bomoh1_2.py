@@ -51,9 +51,9 @@ class Player:
         self.name = name
         self.is_human = is_human
         self.deck = []
-        self.trigger_deck = []
+        self.skill_deck = []
         self.hand = []
-        self.trigger_hand = []
+#        self.trigger_hand = []
         self.life_points = 80
 
     #------------------------------------------#
@@ -69,53 +69,52 @@ class Player:
                     continue
                 self.deck[i], self.deck[randi] = self.deck[randi], self.deck[i]
 
-        #Shuffle trigger card deck
-        length = len(self.trigger_deck)
+        #Shuffle skill card deck
+        length = len(self.skill_deck)
         for _ in range(num):
             # This is the fisher yates shuffle algorithm
             for i in range(length-1, 0, -1):
                 randi = random.randint(0, i)
                 if i == randi:
                     continue
-                self.trigger_deck[i], self.trigger_deck[randi] = self.trigger_deck[randi], self.trigger_deck[i]
+                self.skill_deck[i], self.skill_deck[randi] = self.skill_deck[randi], self.skill_deck[i]
     #------------------------------------------#
 
     def draw_card(self):
         if self.deck:
-            for _ in range(3):
+            for _ in range(2):
                 card = self.deck.pop()
                 self.hand.append(card)
 
-        if self.trigger_deck:
-            for _ in range(3):
-                card = self.trigger_deck.pop()
-                self.trigger_hand.append(card)
+        if self.skill_deck:
+            for _ in range(1):
+                card = self.skill_deck.pop()
+                self.hand.append(card)
 
     def play_card(self, card_index, opponent):
         card = self.hand.pop(card_index)
-        trigger_card = self.trigger_hand.pop(card_index)
         
-            if 0 <= card_index < len(self.hand):
-                if card.attack > opponent.life_points:
-                    opponent.life_points = 0
-                else:
-                    opponent.life_points -= card.attack
-                return card
-            return None
-        
-    #Trigger card play function
-    def play_trigger_card(self, card_index, opponent):
-        trigger_card = self.trigger_hand.pop(card_index)
-        if 0 <= card_index < len(self.trigger_hand):
-            if card.attack == 2:
-                opponent.life_points -= card.attack
-            elif card.defense == 2:
-                for i, card in random.randrange(len(opponent.hand)):
-                    opponent.card.attack -= card.defense
+        if 0 <= card_index < len(self.hand):
+            if card.attack > opponent.life_points:
+                opponent.life_points = 0
             else:
-                self.life_points += card.attack
+                opponent.life_points -= card.attack
             return card
         return None
+        
+    #Trigger card play function
+#    def play_trigger_card(self, card_index, opponent):
+#        trigger_card = self.trigger_hand.pop(card_index)
+#        if 0 <= card_index < len(self.trigger_hand):
+#            if card.attack == 2:
+#                opponent.life_points -= card.attack
+#            elif card.defense == 2:
+#                for i, card in random.randrange(len(opponent.hand)):
+#                    opponent.card.attack -= card.defense
+#            else:
+#                self.life_points += card.attack
+#            return card
+#        return None
     
     def ai_play(self, opponent):
         if self.hand:
@@ -146,7 +145,8 @@ cards_data = [{"name": "Trigger Attack", "attack": 2, "defense": 0, "image": car
               {"name": "Card 2", "attack": 30, "defense": 9, "image": card_images[4]},
               {"name": "Card 3", "attack": 30, "defense": 11, "image": card_images[5]},
               {"name": "Card 4", "attack": 20, "defense": 11, "image": card_images[6]},
-              {"name": "Card 5", "attack": 20, "defense": 11, "image": card_images[7]},    
+              {"name": "Card 5", "attack": 20, "defense": 11, "image": card_images[7]},
+                  
 ]
 
 # Populate decks with custom cards
@@ -154,9 +154,10 @@ for card_data in cards_data[3:]:
     player1.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
     player2.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
 
-#Populate trigger card decks
+#Populate skill card decks
 for card_data in cards_data[0:3]:
-    player1.trigger_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
+    player1.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
+    player2.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
 
 #Shuffle deck
 player1.shuffle()
@@ -274,9 +275,9 @@ while running:
         card.rect.bottomleft = (50 + i * 120, SCREEN_HEIGHT)  # Adjust card position
         screen.blit(card.image, card.rect)
 
-    for i, card in enumerate(player1.trigger_hand):
-        card.rect.bottomright = (700 + i * 120, SCREEN_HEIGHT)  # Adjust card position
-        screen.blit(card.image, card.rect)
+#    for i, card in enumerate(player1.trigger_hand):
+#        card.rect.bottomright = (700 + i * 120, SCREEN_HEIGHT)  # Adjust card position
+#        screen.blit(card.image, card.rect)
         
 
     # Draw player 2's hand
