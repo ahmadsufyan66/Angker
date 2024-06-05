@@ -56,7 +56,7 @@ class Player:
         self.deck = []
         self.skill_deck = []
         self.hand = []
-        self.life_points = 80
+        self.life_points = 100
 
     def shuffle(self, num=1):
         length = len(self.deck)
@@ -210,7 +210,7 @@ while running:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and turn_counter < 1:  # Only draw cards for the first spacebar press
+            if event.key == pygame.K_SPACE and (turn_counter < 1 or (not player1.hand and not player2.hand)):  # Only draw cards for the first spacebar press or if both hands are empty
                 player1.draw_card()
                 player2.draw_card()
                 turn_counter += 1  # Increment turn counter
