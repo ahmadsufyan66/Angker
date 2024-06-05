@@ -43,7 +43,7 @@ class Card:
         self.attack = attack
         self.defense = defense
         self.base_image = pygame.image.load(image)
-        self.base_image = pygame.transform.scale(self.base_image, (100, 150))
+        self.base_image = pygame.transform.scale(self.base_image, (150, 250))
         self.image = self.base_image.copy()  # Create a copy of the base image
         self.rect = self.image.get_rect()
         self.is_dragging = False
@@ -55,7 +55,7 @@ class Card:
         if self.rect.collidepoint(mouse_pos):
             self.hovered = True
             # Increase the size of the card when hovered over
-            self.image = pygame.transform.scale(self.base_image, (120, 180))
+            self.image = pygame.transform.scale(self.base_image, (180, 270))
         else:
             self.hovered = False
             self.image = self.base_image.copy()  # Reset the image to its original size
@@ -145,7 +145,7 @@ def randomize_effect(player, opponent):
 
 # Create display window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('TCG Game')
+pygame.display.set_caption('ANGKER')
 
 # Create players
 player1 = Player("Player 1", True)  # human
@@ -229,14 +229,14 @@ while running:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and (turn_counter < 1 or (not player1.hand and not player2.hand)):  # Only draw cards for the first spacebar press or if both hands are empty
+            if event.key == pygame.K_SPACE and (turn_counter < 1 or (not player1.hand and not player2.hand)):  # Allow drawing cards for the first two turns or if both hands are empty
                 player1.draw_card()
                 player2.draw_card()
                 turn_counter += 1  # Increment turn counter
                 print("")
                 print(f"{player1.name} and {player2.name} draw a card.")
                 print("")
-            elif event.key == pygame.K_SPACE and turn_counter == 1:  # On the second spacebar press, allow player 1 to play a card
+                # Reset player turns after drawing cards
                 player1_turn = True
             elif event.key == pygame.K_RETURN and done and dialogue_active:
                 dialogue_active = False
@@ -266,7 +266,7 @@ while running:
                 active_box = None
                 for i, card in enumerate(player1.hand):
                     if card.is_dragging:
-                        card.is_dragging = True
+                        card.is_dragging = False 
                         card.rect.center = (50 + i * 120 + 50, SCREEN_HEIGHT - 170)  # Reset card position
                         played_card = player1.play_card(i, player2)
                         if played_card:
@@ -278,14 +278,15 @@ while running:
                                 dialogue_active = True
                                 active_message = 1
                                 counter = 0
-                        player1_turn = False  # End player 1's turn
+                        # Switch to player 2's turn after player 1's turn
+                        player1_turn = False
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
     # AI player's turn
-    if not player1_turn and turn_counter == 1 and not dialogue_active:  # Only let AI play after player 1's turn and all cards have been drawn
+    if not player1_turn and not dialogue_active:  # Only let AI play after player 1's turn and all cards have been drawn
         played_card = player2.ai_play(player1)
         if played_card:
             print("")
@@ -296,7 +297,8 @@ while running:
                 dialogue_active = True
                 active_message = 0
                 counter = 0
-        player1_turn = True  # End AI player's turn
+        # Switch to player 1's turn after player 2's turn
+        player1_turn = True
 
     # Draw background
     screen.fill(WHITE)
@@ -306,7 +308,7 @@ while running:
 
     # Draw player 1's hand
     for i, card in enumerate(player1.hand):
-        card.rect.bottomleft = (500 + i * 120, SCREEN_HEIGHT)  # Adjust card position
+        card.rect.bottomleft = (500 + i * 200, SCREEN_HEIGHT)  # Adjust card position
         screen.blit(card.image, card.rect)
 
     for card in player1.hand:
@@ -315,9 +317,9 @@ while running:
 
     # Draw player 2's hand
     for i, card in enumerate(player2.hand):
-        screen.blit(card.image, (500 + i * 120, 20))
+        screen.blit(card.image, (500 + i * 200, 20))
      
-     # Draw life point scales
+    # Draw life point scales
     draw_life_scale(player1, 50, SCREEN_HEIGHT - 50)
     draw_life_scale(player2, 50, 30)
 
@@ -337,8 +339,6 @@ while running:
     if player1.life_points <= 0:
         pygame.quit()
         call(('python', 'lose.py'))
-
-    
 
     pygame.display.flip()
 
