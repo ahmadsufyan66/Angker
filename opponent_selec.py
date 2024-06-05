@@ -28,17 +28,20 @@ def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
     text_rect = img.get_rect(center=(770, 100))
     screen.blit(img, text_rect)
-
+5
 #load button images
 exit_img = pygame.image.load('assets/exit_btn.png').convert_alpha()
-button_img = pygame.image.load('assets/button1.png').convert_alpha()    
+bomoh1_img = pygame.image.load('assets/bomoh1.png').convert_alpha()
+bomoh2_img = pygame.image.load('assets/bomoh2.png').convert_alpha()
+bomoh3_img = pygame.image.load('assets/bomoh3.png').convert_alpha()
+bomoh4_img = pygame.image.load('assets/bomoh4.png').convert_alpha()    
 
 #create button instances
-exit_button = button.Button(30, 700, exit_img, 1.1)
-bomoh1_button = button.Button(50, 200, button_img, 0.5)
-bomoh2_button = button.Button(400, 400, button_img, 0.5)
-bomoh3_button = button.Button(750, 200, button_img, 0.5)
-bomoh4_button = button.Button(1100, 400, button_img, 0.5)    
+exit_button = button.Button(40, 700, exit_img, 1.1)
+bomoh1_button = button.Button(280, 220, bomoh1_img, 0.5)
+bomoh2_button = button.Button(560, 420, bomoh2_img, 0.5)
+bomoh3_button = button.Button(840, 220, bomoh3_img, 0.5)
+bomoh4_button = button.Button(1120, 420, bomoh4_img, 0.5)    
 
 #game loop
 run = True
