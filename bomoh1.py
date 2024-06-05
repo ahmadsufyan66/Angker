@@ -4,6 +4,7 @@ import pygame
 # Initialize Pygame
 pygame.init()
 
+import pygame.time
 import sys
 import random
 from subprocess import call
@@ -33,6 +34,7 @@ SCREEN_HEIGHT = 810
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 
 # Define Card class
 class Card:
@@ -184,6 +186,10 @@ for card_data in cards_data[5:]:
 player1.shuffle()
 player2.shuffle()
 
+#Draw life scale
+def draw_life_scale(player, x, y):
+    pygame.draw.rect(screen, GREEN, (x, y, player.life_points * 2, 20))
+
 # Drag and drop function
 boxes = []
 images = []
@@ -260,7 +266,7 @@ while running:
                 active_box = None
                 for i, card in enumerate(player1.hand):
                     if card.is_dragging:
-                        card.is_dragging = False
+                        card.is_dragging = True
                         card.rect.center = (50 + i * 120 + 50, SCREEN_HEIGHT - 170)  # Reset card position
                         played_card = player1.play_card(i, player2)
                         if played_card:
@@ -300,7 +306,7 @@ while running:
 
     # Draw player 1's hand
     for i, card in enumerate(player1.hand):
-        card.rect.bottomleft = (50 + i * 120, SCREEN_HEIGHT)  # Adjust card position
+        card.rect.bottomleft = (500 + i * 120, SCREEN_HEIGHT)  # Adjust card position
         screen.blit(card.image, card.rect)
 
     for card in player1.hand:
@@ -309,16 +315,11 @@ while running:
 
     # Draw player 2's hand
     for i, card in enumerate(player2.hand):
-        screen.blit(card.image, (50 + i * 120, 20))
-
-    # Draw player 1's life points
-    font = pygame.font.Font('GOODDC__.TTF', 36)
-    text = font.render(f"{player1.name} HP: {player1.life_points}", True, BLACK)
-    screen.blit(text, (50, SCREEN_HEIGHT - 50))
-
-    # Draw player 2's life points
-    text = font.render(f"{player2.name} HP: {player2.life_points}", True, BLACK)
-    screen.blit(text, (50, 10))
+        screen.blit(card.image, (500 + i * 120, 20))
+     
+     # Draw life point scales
+    draw_life_scale(player1, 50, SCREEN_HEIGHT - 50)
+    draw_life_scale(player2, 50, 30)
 
     # Draw dialogue if active
     if dialogue_active and active_message is not None:
