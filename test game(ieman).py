@@ -1,4 +1,3 @@
-# Import required libraries
 import pygame
 import sys
 import random
@@ -11,11 +10,13 @@ pygame.init()
 dialogue_font = pygame.font.Font('GOODDC__.TTF', 40)
 
 # Dialogue
+timer = pygame.time.Clock()
 messages = [
     'All of that for this? Reality is often disappointing, isn\'t it?   (press enter to continue)',
     'Dread it, run from it, destiny arrives all the same, and YOU are no exception!   (press enter to continue)',
     'Isn\'t this a great text dialogue?'
 ]
+snip = dialogue_font.render('', True, 'dark red')
 counter = 0
 speed = 3
 active_message = None
@@ -30,6 +31,7 @@ SCREEN_HEIGHT = 810
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 
 # Define Card class
 class Card:
@@ -37,30 +39,27 @@ class Card:
         self.name = name
         self.attack = attack
         self.defense = defense
-        self.image = pygame.image.load(image)
-        self.image = pygame.transform.scale(self.image, (100, 150))
+        self.base_image = pygame.image.load(image)
+        self.base_image = pygame.transform.scale(self.base_image, (150, 250))
+        self.image = self.base_image.copy()  # Create a copy of the base image
         self.rect = self.image.get_rect()
         self.is_dragging = False
-        self.is_hovered = False  # Track whether the card is currently hovered over
         self.randomize_effect = trigger_effect
         self.click_count = 0  # Initialize click count attribute
+        self.hovered = False  # Track whether the card is being hovered over
 
     def update(self, mouse_pos):
-        # Check if the mouse cursor is over the card
         if self.rect.collidepoint(mouse_pos):
-            self.is_hovered = True
+            self.hovered = True
+            # Increase the size of the card when hovered over
+            self.image = pygame.transform.scale(self.base_image, (200, 300))
         else:
-            self.is_hovered = False
+            self.hovered = False
+            self.image = self.base_image.copy()  # Reset the image to its original size
 
-    def render(self, screen):
-        # Adjust brightness of the card image based on whether it's hovered over
-        if self.is_hovered:
-            # Brighten the image
-            brightened_image = pygame.Surface(self.image.get_size(), pygame.SRCALPHA)
-            brightened_image.fill((255, 255, 255, 128))  # Fill with semi-transparent white
-            self.image.blit(brightened_image, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
-        screen.blit(self.image, self.rect)
-
+    def render(self, surface):
+        surface.blit(self.image, self.rect)
+            
 # Define Player class
 class Player:
     def __init__(self, name, is_human):
@@ -80,9 +79,10 @@ class Player:
                     continue
                 self.deck[i], self.deck[randi] = self.deck[randi], self.deck[i]
 
-        # Shuffle skill card deck
+        #Shuffle skill card deck
         length = len(self.skill_deck)
         for _ in range(num):
+            # This is the fisher yates shuffle algorithm
             for i in range(length-1, 0, -1):
                 randi = random.randint(0, i)
                 if i == randi:
@@ -99,6 +99,7 @@ class Player:
             for _ in range(1):
                 card = self.skill_deck.pop()
                 self.hand.append(card)
+
 
     def play_card(self, card_index, opponent):
         if 0 <= card_index < len(self.hand):
@@ -141,7 +142,7 @@ def randomize_effect(player, opponent):
 
 # Create display window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('TCG Game')
+pygame.display.set_caption('ANGKER')
 
 # Create players
 player1 = Player("Player 1", True)  # human
@@ -155,16 +156,16 @@ card_images = ["card_images/Card1.png", "card_images/Card2.png", "card_images/Ca
 
 # Customize attack and defense for each card
 cards_data = [
-    {"name": "Card 1", "attack": 20, "defense": 7, "image": card_images[0]},
-    {"name": "Card 2", "attack": 20, "defense": 9, "image": card_images[1]},
-    {"name": "Card 3", "attack": 20, "defense": 11, "image": card_images[2]},
-    {"name": "Card 4", "attack": 20, "defense": 11, "image": card_images[3]},
-    {"name": "Card 5", "attack": 20, "defense": 11, "image": card_images[4]},
+    {"name": "Card 1", "attack": 20, "defense": 7, "image": card_images[0]}, #"trigger_effect": randomize_effect},
+    {"name": "Card 2", "attack": 20, "defense": 9, "image": card_images[1]}, #"trigger_effect": randomize_effect},
+    {"name": "Card 3", "attack": 20, "defense": 11, "image": card_images[2]},#"trigger_effect": randomize_effect},
+    {"name": "Card 4", "attack": 20, "defense": 11, "image": card_images[3]}, #"trigger_effect": randomize_effect},
+    {"name": "Card 5", "attack": 20, "defense": 11, "image": card_images[4]}, #"trigger_effect": randomize_effect},  # Trigger card example
     {"name": "Card 1(skill)", "attack": 20, "defense": 7, "image": card_images[0], "trigger_effect": randomize_effect},
     {"name": "Card 2(skill)", "attack": 20, "defense": 9, "image": card_images[1], "trigger_effect": randomize_effect},
     {"name": "Card 3(skill)", "attack": 20, "defense": 11, "image": card_images[2], "trigger_effect": randomize_effect},
     {"name": "Card 4(skill)", "attack": 20, "defense": 11, "image": card_images[3], "trigger_effect": randomize_effect},
-    {"name": "Card 5(skill)", "attack": 20, "defense": 11, "image": card_images[4], "trigger_effect": randomize_effect},  
+    {"name": "Card 5(skill)", "attack": 20, "defense": 11, "image": card_images[4], "trigger_effect": randomize_effect},  # 
 ]
 
 # Populate decks with custom cards
@@ -172,14 +173,19 @@ for card_data in cards_data[0:5]:
     player1.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("trigger_effect")))
     player2.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("trigger_effect")))
 
-# Populate skill card decks
+#Populate skill card decks
 for card_data in cards_data[5:]:
     player1.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
     player2.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
 
+
 # Shuffle deck
 player1.shuffle()
 player2.shuffle()
+
+#Draw life scale
+def draw_life_scale(player, x, y):
+    pygame.draw.rect(screen, GREEN, (x, y, player.life_points * 2, 20))
 
 # Function to render dialogue
 def render_dialogue(message, counter, speed):
@@ -187,6 +193,27 @@ def render_dialogue(message, counter, speed):
         counter += 1
     snip = dialogue_font.render(message[:counter // speed], True, 'dark red')
     return snip, counter
+
+# Animation function to move card to the center
+def animate_card(card, target_pos):
+    animating = True
+    while animating:
+        card.rect.x += (target_pos[0] - card.rect.x) // 10
+        card.rect.y += (target_pos[1] - card.rect.y) // 10
+        if abs(target_pos[0] - card.rect.x) < 5 and abs(target_pos[1] - card.rect.y) < 5:
+            card.rect.x, card.rect.y = target_pos
+            animating = False
+        screen.fill(WHITE)
+        pygame.draw.rect(screen, RED, rect_1)
+        for i, hand_card in enumerate(player1.hand):
+            hand_card.render(screen)
+        for i, hand_card in enumerate(player2.hand):
+            hand_card.render(screen)
+        card.render(screen)
+        draw_life_scale(player1, 50, SCREEN_HEIGHT - 50)
+        draw_life_scale(player2, 50, 30)
+        pygame.display.flip()
+        pygame.time.Clock().tick(60)
 
 # Game loop
 running = True
@@ -197,8 +224,9 @@ while running:
 
     # Update card positions if dragging
     mouse_pos = pygame.mouse.get_pos()
-    for card in player1.hand:
-        card.update(mouse_pos)
+    for i, card in enumerate(player1.hand):
+        if card.is_dragging:
+            card.rect.center = mouse_pos
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -232,23 +260,20 @@ while running:
                 for i, card in enumerate(player1.hand):
                     if card.is_dragging:
                         card.is_dragging = False
-                        card.rect.center = (50 + i * 120 + 50, SCREEN_HEIGHT - 170)  # Reset card position
-                        if card.rect.colliderect(rect_1):  # Check if card is dropped in the attacking area
+                        if rect_1.collidepoint(card.rect.center):
                             played_card = player1.play_card(i, player2)
                             if played_card:
                                 print("")
                                 print(f"{player1.name} plays {played_card.name}.")
                                 print(f"{player2.name} has {player2.life_points} life points remaining.")
                                 print("")
+                                # Animate the card to the center
+                                animate_card(played_card, (SCREEN_WIDTH // 2 - played_card.rect.width // 2, SCREEN_HEIGHT // 2 - played_card.rect.height // 2))
                                 if player2.life_points <= 50 and active_message is None:
                                     dialogue_active = True
                                     active_message = 1
                                     counter = 0
                             player1_turn = False  # End player 1's turn
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
 
     # AI player's turn
     if not player1_turn and turn_counter == 1 and not dialogue_active:  # Only let AI play after player 1's turn and all cards have been drawn
@@ -258,6 +283,8 @@ while running:
             print(f"{player2.name} plays {played_card.name}.")
             print(f"{player1.name} has {player1.life_points} life points remaining.")
             print("")
+            # Animate the card to the center
+            animate_card(played_card, (SCREEN_WIDTH // 2 - played_card.rect.width // 2, SCREEN_HEIGHT // 2 - played_card.rect.height // 2))
             if player1.life_points <= 50 and active_message is None:
                 dialogue_active = True
                 active_message = 0
@@ -272,20 +299,20 @@ while running:
 
     # Draw player 1's hand
     for i, card in enumerate(player1.hand):
+        card.rect.bottomleft = (500 + i * 200, SCREEN_HEIGHT)  # Adjust card position
+        screen.blit(card.image, card.rect)
+
+    for card in player1.hand:
+        card.update(pygame.mouse.get_pos())
         card.render(screen)
 
     # Draw player 2's hand
     for i, card in enumerate(player2.hand):
-        screen.blit(card.image, (50 + i * 120, 20))
-
-    # Draw player 1's life points
-    font = pygame.font.Font('GOODDC__.TTF', 36)
-    text = font.render(f"{player1.name} HP: {player1.life_points}", True, BLACK)
-    screen.blit(text, (50, SCREEN_HEIGHT - 50))
-
-    # Draw player 2's life points
-    text = font.render(f"{player2.name} HP: {player2.life_points}", True, BLACK)
-    screen.blit(text, (50, 10))
+        screen.blit(card.image, (500 + i * 200, 20))
+     
+     # Draw life point scales
+    draw_life_scale(player1, 50, SCREEN_HEIGHT - 50)
+    draw_life_scale(player2, 50, 30)
 
     # Draw dialogue if active
     if dialogue_active and active_message is not None:
@@ -308,4 +335,3 @@ while running:
 
 # Quit Pygame
 pygame.quit()
-
