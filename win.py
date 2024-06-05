@@ -14,7 +14,7 @@ pygame.mixer.pre_init(44100, 16, 2, 4096)
 pygame.init()
 
 #Background
-background = pygame.image.load('assets/win_bg.png')
+background = pygame.image.load('assets/win_bg.jpg')
 scale_bg = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 #load button images
