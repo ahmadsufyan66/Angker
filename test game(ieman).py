@@ -122,6 +122,7 @@ def randomize_effect(card, player, opponent):
     else:
         player.life_points += 10
         print(f"{player.name} heals 10 life points!")
+      
 
 # Create display window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
