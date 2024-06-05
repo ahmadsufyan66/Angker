@@ -1,24 +1,21 @@
 # Import required libraries
 import pygame
-
-# Initialize Pygame
-pygame.init()
-
 import sys
 import random
 from subprocess import call
+
+# Initialize Pygame
+pygame.init()
 
 # Font
 dialogue_font = pygame.font.Font('GOODDC__.TTF', 40)
 
 # Dialogue
-timer = pygame.time.Clock()
 messages = [
     'All of that for this? Reality is often disappointing, isn\'t it?   (press enter to continue)',
     'Dread it, run from it, destiny arrives all the same, and YOU are no exception!   (press enter to continue)',
     'Isn\'t this a great text dialogue?'
 ]
-snip = dialogue_font.render('', True, 'dark red')
 counter = 0
 speed = 3
 active_message = None
@@ -44,16 +41,25 @@ class Card:
         self.image = pygame.transform.scale(self.image, (100, 150))
         self.rect = self.image.get_rect()
         self.is_dragging = False
-        self.trigger_effect = trigger_effect
-        self.trigger_uses = 0  # Initialize trigger uses count
+        self.is_hovered = False  # Track whether the card is currently hovered over
+        self.randomize_effect = trigger_effect
+        self.click_count = 0  # Initialize click count attribute
 
-    def use_trigger_effect(self, player, opponent):
-        if self.trigger_effect and self.trigger_uses < 3:
-            self.trigger_effect(self, player, opponent)
-            self.trigger_uses += 1
-            print(f"{self.name}'s trigger effect used {self.trigger_uses} times.")
-            if self.trigger_uses == 3:
-                print(f"{self.name}'s trigger effect can no longer be used.")
+    def update(self, mouse_pos):
+        # Check if the mouse cursor is over the card
+        if self.rect.collidepoint(mouse_pos):
+            self.is_hovered = True
+        else:
+            self.is_hovered = False
+
+    def render(self, screen):
+        # Adjust brightness of the card image based on whether it's hovered over
+        if self.is_hovered:
+            # Brighten the image
+            brightened_image = pygame.Surface(self.image.get_size(), pygame.SRCALPHA)
+            brightened_image.fill((255, 255, 255, 128))  # Fill with semi-transparent white
+            self.image.blit(brightened_image, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+        screen.blit(self.image, self.rect)
 
 # Define Player class
 class Player:
@@ -63,7 +69,7 @@ class Player:
         self.deck = []
         self.skill_deck = []
         self.hand = []
-        self.life_points = 80
+        self.life_points = 100
 
     def shuffle(self, num=1):
         length = len(self.deck)
@@ -74,10 +80,9 @@ class Player:
                     continue
                 self.deck[i], self.deck[randi] = self.deck[randi], self.deck[i]
 
-        #Shuffle skill card deck
+        # Shuffle skill card deck
         length = len(self.skill_deck)
         for _ in range(num):
-            # This is the fisher yates shuffle algorithm
             for i in range(length-1, 0, -1):
                 randi = random.randint(0, i)
                 if i == randi:
@@ -95,7 +100,6 @@ class Player:
                 card = self.skill_deck.pop()
                 self.hand.append(card)
 
-
     def play_card(self, card_index, opponent):
         if 0 <= card_index < len(self.hand):
             card = self.hand.pop(card_index)
@@ -104,7 +108,8 @@ class Player:
             else:
                 opponent.life_points -= card.attack
             # Check for trigger effect
-            card.use_trigger_effect(self, opponent)
+            if card.randomize_effect:
+                card.randomize_effect(self, opponent)
             return card
         return None
 
@@ -115,14 +120,24 @@ class Player:
         return None
 
 # Define a function to handle the randomization of the effect
-def randomize_effect(card, player, opponent):
-    if random.choice([True, False]):
-        opponent.life_points -= card.attack  # Use the attack value of the card that triggered the effect
-        print(f"{player.name}'s attack is doubled!")
-    else:
+def randomize_effect(player, opponent):
+    # Randomly choose between doubling attack or healing +10
+    choice = random.choice(["more_attack", "heal"])
+    if choice == "more_attack":
+        # increase the attack of the first card in player's hand
+        if player.hand:
+            card_attack = 10 + player.hand[0].attack
+            opponent.life_points -= card_attack
+            print("")
+            print(f"{player.name} plus 10 attack with {player.hand[0].name}!")
+            print(f"{opponent.name} has {opponent.life_points} life points remaining.")
+            print("")
+    elif choice == "heal":
+        # Heal +10 to the player
         player.life_points += 10
+        print("")
         print(f"{player.name} heals 10 life points!")
-      
+        print("")
 
 # Create display window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -140,40 +155,31 @@ card_images = ["card_images/Card1.png", "card_images/Card2.png", "card_images/Ca
 
 # Customize attack and defense for each card
 cards_data = [
-    {"name": "Card 1", "attack": 20, "defense": 7, "image": card_images[0], "trigger_effect": randomize_effect},
-    {"name": "Card 2", "attack": 20, "defense": 9, "image": card_images[1], "trigger_effect": randomize_effect},
-    {"name": "Card 3", "attack": 20, "defense": 11, "image": card_images[2], "trigger_effect": randomize_effect},
-    {"name": "Card 4", "attack": 20, "defense": 11, "image": card_images[3], "trigger_effect": randomize_effect},
-    {"name": "Card 5", "attack": 20, "defense": 11, "image": card_images[4], "trigger_effect": randomize_effect},  # Trigger card example
+    {"name": "Card 1", "attack": 20, "defense": 7, "image": card_images[0]},
+    {"name": "Card 2", "attack": 20, "defense": 9, "image": card_images[1]},
+    {"name": "Card 3", "attack": 20, "defense": 11, "image": card_images[2]},
+    {"name": "Card 4", "attack": 20, "defense": 11, "image": card_images[3]},
+    {"name": "Card 5", "attack": 20, "defense": 11, "image": card_images[4]},
+    {"name": "Card 1(skill)", "attack": 20, "defense": 7, "image": card_images[0], "trigger_effect": randomize_effect},
+    {"name": "Card 2(skill)", "attack": 20, "defense": 9, "image": card_images[1], "trigger_effect": randomize_effect},
+    {"name": "Card 3(skill)", "attack": 20, "defense": 11, "image": card_images[2], "trigger_effect": randomize_effect},
+    {"name": "Card 4(skill)", "attack": 20, "defense": 11, "image": card_images[3], "trigger_effect": randomize_effect},
+    {"name": "Card 5(skill)", "attack": 20, "defense": 11, "image": card_images[4], "trigger_effect": randomize_effect},  
 ]
 
 # Populate decks with custom cards
-for card_data in cards_data:
+for card_data in cards_data[0:5]:
     player1.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("trigger_effect")))
     player2.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("trigger_effect")))
 
-#Populate special*** card decks
+# Populate skill card decks
 for card_data in cards_data[5:]:
     player1.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
     player2.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
 
-
 # Shuffle deck
 player1.shuffle()
 player2.shuffle()
-
-# Drag and drop function
-boxes = []
-images = []
-
-for i in range(len(card_images)):
-    temp_img = pygame.image.load(card_images[i]).convert_alpha()
-    image = pygame.transform.scale(temp_img, (100, 100))
-    object_rect = image.get_rect()
-    boxes.append(object_rect)
-    images.append(card_images)
-
-active_box = None
 
 # Function to render dialogue
 def render_dialogue(message, counter, speed):
@@ -191,9 +197,8 @@ while running:
 
     # Update card positions if dragging
     mouse_pos = pygame.mouse.get_pos()
-    for i, card in enumerate(player1.hand):
-        if card.is_dragging:
-            card.rect.center = mouse_pos
+    for card in player1.hand:
+        card.update(mouse_pos)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -201,11 +206,13 @@ while running:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and turn_counter < 1:  # Only draw cards for the first spacebar press
+            if event.key == pygame.K_SPACE and (turn_counter < 1 or (not player1.hand and not player2.hand)):  # Only draw cards for the first spacebar press or if both hands are empty
                 player1.draw_card()
                 player2.draw_card()
                 turn_counter += 1  # Increment turn counter
+                print("")
                 print(f"{player1.name} and {player2.name} draw a card.")
+                print("")
             elif event.key == pygame.K_SPACE and turn_counter == 1:  # On the second spacebar press, allow player 1 to play a card
                 player1_turn = True
             elif event.key == pygame.K_RETURN and done and dialogue_active:
@@ -216,37 +223,28 @@ while running:
 
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if player1_turn:
-                for num, box in enumerate(boxes):
-                    if box.collidepoint(event.pos):
-                        active_box = num
                 for i, card in enumerate(player1.hand):
                     if card.rect.collidepoint(event.pos):
                         card.is_dragging = True
 
-        if event.type == pygame.MOUSEMOTION:
-            if active_box is not None:
-                boxes[active_box].move_ip(event.rel)
-
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             if player1_turn:  # Only play card if it's player 1's turn
-                # Check collision
-                if object_rect.colliderect(rect_1):
-                    call(('python', "opponent_selec.py"))
-
-                active_box = None
                 for i, card in enumerate(player1.hand):
                     if card.is_dragging:
                         card.is_dragging = False
                         card.rect.center = (50 + i * 120 + 50, SCREEN_HEIGHT - 170)  # Reset card position
-                        played_card = player1.play_card(i, player2)
-                        if played_card:
-                            print(f"{player1.name} plays {played_card.name}.")
-                            print(f"{player2.name} has {player2.life_points} life points remaining.")
-                            if player2.life_points <= 50 and active_message is None:
-                                dialogue_active = True
-                                active_message = 1
-                                counter = 0
-                        player1_turn = False  # End player 1's turn
+                        if card.rect.colliderect(rect_1):  # Check if card is dropped in the attacking area
+                            played_card = player1.play_card(i, player2)
+                            if played_card:
+                                print("")
+                                print(f"{player1.name} plays {played_card.name}.")
+                                print(f"{player2.name} has {player2.life_points} life points remaining.")
+                                print("")
+                                if player2.life_points <= 50 and active_message is None:
+                                    dialogue_active = True
+                                    active_message = 1
+                                    counter = 0
+                            player1_turn = False  # End player 1's turn
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -256,8 +254,10 @@ while running:
     if not player1_turn and turn_counter == 1 and not dialogue_active:  # Only let AI play after player 1's turn and all cards have been drawn
         played_card = player2.ai_play(player1)
         if played_card:
+            print("")
             print(f"{player2.name} plays {played_card.name}.")
             print(f"{player1.name} has {player1.life_points} life points remaining.")
+            print("")
             if player1.life_points <= 50 and active_message is None:
                 dialogue_active = True
                 active_message = 0
@@ -272,8 +272,7 @@ while running:
 
     # Draw player 1's hand
     for i, card in enumerate(player1.hand):
-        card.rect.bottomleft = (50 + i * 120, SCREEN_HEIGHT)  # Adjust card position
-        screen.blit(card.image, card.rect)
+        card.render(screen)
 
     # Draw player 2's hand
     for i, card in enumerate(player2.hand):
@@ -309,3 +308,4 @@ while running:
 
 # Quit Pygame
 pygame.quit()
+
