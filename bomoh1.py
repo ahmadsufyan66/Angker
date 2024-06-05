@@ -40,14 +40,27 @@ class Card:
         self.name = name
         self.attack = attack
         self.defense = defense
-        self.image = pygame.image.load(image)
-        self.image = pygame.transform.scale(self.image, (100, 150))
+        self.base_image = pygame.image.load(image)
+        self.base_image = pygame.transform.scale(self.base_image, (100, 150))
+        self.image = self.base_image.copy()  # Create a copy of the base image
         self.rect = self.image.get_rect()
         self.is_dragging = False
         self.randomize_effect = randomize_effect
         self.click_count = 0  # Initialize click count attribute
+        self.hovered = False  # Track whether the card is being hovered over
 
+    def update(self, mouse_pos):
+        if self.rect.collidepoint(mouse_pos):
+            self.hovered = True
+            # Increase the size of the card when hovered over
+            self.image = pygame.transform.scale(self.base_image, (120, 180))
+        else:
+            self.hovered = False
+            self.image = self.base_image.copy()  # Reset the image to its original size
 
+    def render(self, surface):
+        surface.blit(self.image, self.rect)
+            
 # Define Player class
 class Player:
     def __init__(self, name, is_human):
@@ -290,6 +303,10 @@ while running:
         card.rect.bottomleft = (50 + i * 120, SCREEN_HEIGHT)  # Adjust card position
         screen.blit(card.image, card.rect)
 
+    for card in player1.hand:
+        card.update(pygame.mouse.get_pos())
+        card.render(screen)
+
     # Draw player 2's hand
     for i, card in enumerate(player2.hand):
         screen.blit(card.image, (50 + i * 120, 20))
@@ -319,6 +336,8 @@ while running:
     if player1.life_points <= 0:
         pygame.quit()
         call(('python', 'lose.py'))
+
+    
 
     pygame.display.flip()
 
