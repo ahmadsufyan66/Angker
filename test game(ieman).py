@@ -152,7 +152,7 @@ for card_data in cards_data:
     player1.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("trigger_effect")))
     player2.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("trigger_effect")))
 
-#Populate skill card decks
+#Populate special*** card decks
 for card_data in cards_data[5:]:
     player1.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
     player2.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
