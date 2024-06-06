@@ -146,7 +146,6 @@ class Player:
                 print("")
                 print("-Will insert skill-")
                 print("")
-
             if card.name == "Freddy Krueger (skill)":
                 lost_life_points = self.initial_life_points - self.life_points
                 card.attack += lost_life_points  # Increase attack based on lost life points

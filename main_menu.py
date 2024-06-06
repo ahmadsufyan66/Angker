@@ -44,7 +44,9 @@ pygame.mixer.music.play(-1)
 run = True
 while run:
 
-    screen.fill((255, 20, 255))
+
+    #Background Image
+    screen.blit(scale_bg, (0, 0))
 
     draw_text("ANGKER", text_font, (255, 0, 0), 400, 600)
 
