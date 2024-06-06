@@ -14,12 +14,8 @@ pygame.mixer.pre_init(44100, 16, 2, 4096)
 pygame.init()
 
 #Background
-background = pygame.image.load('assets/win_bg.png')
+background = pygame.image.load('assets/mainmenu_bg.jpg')
 scale_bg = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
-
-#load button images
-back_img = pygame.image.load('back-removebg-preview.png').convert_alpha()
-retry_img = pygame.image.load('retry_button-removebg-preview.png').convert_alpha()
 
 #available fonts
 btn_font = pygame.font.Font("assets/Daydream.ttf", 60)
@@ -30,8 +26,8 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 
 #create button instances
-back_button = button.TextButton(450, SCREEN_HEIGHT/2, "BACK", btn_font, WHITE, RED, 1)
-retry_button = button.TextButton(950, SCREEN_HEIGHT/2, "RETRY", btn_font, WHITE, RED, 1)
+start_btn = button.TextButton(450, SCREEN_HEIGHT/2, "START", btn_font, WHITE, RED, 1)
+exit_btn = button.TextButton(950, SCREEN_HEIGHT/2, "EXIT", btn_font, WHITE, RED, 1)
 
 
 def draw_text(text, font, text_col, x, y):
@@ -40,28 +36,28 @@ def draw_text(text, font, text_col, x, y):
     screen.blit(img, text_rect)
 
 #Play background music
-#pygame.mixer.music.load("Undertale OST 073  The Choice.mp3")
-#pygame.mixer.music.set_volume(0.5)
-#pygame.mixer.music.play(-1)
+pygame.mixer.music.load("y2mate.com - Josukes Theme but its lofi hiphop.mp3")
+pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.play(-1)
 
 #game loop
 run = True
 while run:
 
-    screen.fill((255, 20, 255))
+
     #Background Image
     screen.blit(scale_bg, (0, 0))
 
     draw_text("ANGKER", text_font, (255, 0, 0), 400, 600)
 
 
-    if back_button.draw(screen):
+    if start_btn.draw(screen):
         print('START')
         #pygame.mixer.music.stop()
         pygame.quit()
         call (('python', 'opponent_selec.py'))
 
-    if retry_button.draw(screen):
+    if exit_btn.draw(screen):
         print('EXIT')
         #pygame.mixer.music.stop()
         pygame.quit()

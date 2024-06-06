@@ -222,6 +222,7 @@ player1_turn = True
 
 while running:
 
+
     # Update card positions if dragging
     mouse_pos = pygame.mouse.get_pos()
     for i, card in enumerate(player1.hand):

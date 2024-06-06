@@ -14,6 +14,9 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Angker')
 pygame.init()
 
+#Background
+background = pygame.image.load('assets/oppsel_bg.jpg')
+scale_bg = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 #title
 text_font = pygame.font.Font("GOODDC__.TTF", 200)
@@ -49,6 +52,9 @@ while run:
     pos = pygame.mouse.get_pos()
 
     screen.fill((59,59,59))
+
+    #Background Image
+    screen.blit(scale_bg, (0, 0))
 
     #title
     draw_text("SELECT YOUR BOMOH", text_font, (255, 0, 0), 0, 0)
