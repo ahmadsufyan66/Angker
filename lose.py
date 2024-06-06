@@ -14,7 +14,7 @@ pygame.mixer.pre_init(44100, 16, 2, 4096)
 pygame.init()
 
 #Background
-background = pygame.image.load('assets/lose_bg.png')
+background = pygame.image.load('assets/lose_bg.jpg')
 scale_bg = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 #load button images
@@ -49,7 +49,7 @@ run = True
 while run:
 
     screen.fill((255, 20, 255))
-    #Background Image
+    # Background Image   
     screen.blit(scale_bg, (0, 0))
 
     draw_text("YOU LOST", text_font, (255, 0, 0), 400, 600)
