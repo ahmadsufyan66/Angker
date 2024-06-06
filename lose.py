@@ -14,7 +14,7 @@ pygame.mixer.pre_init(44100, 16, 2, 4096)
 pygame.init()
 
 #Background
-background = pygame.image.load('assets/lose_bg.jpgs')
+background = pygame.image.load('assets/lose_bg.jpg')
 scale_bg = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 #load button images
@@ -40,7 +40,7 @@ def draw_text(text, font, text_col, x, y):
     screen.blit(img, text_rect)
 
 #Play background music
-pygame.mixer.music.load("Undertale OST 073  The Choice.mp3")
+pygame.mixer.music.load("Undertale OST 085  Fallen Down Reprise.mp3")
 pygame.mixer.music.set_volume(0.5)
 pygame.mixer.music.play(-1)
 
@@ -49,7 +49,7 @@ run = True
 while run:
 
     screen.fill((255, 20, 255))
-    #Background Image
+    # Background Image   
     screen.blit(scale_bg, (0, 0))
 
     draw_text("YOU LOST", text_font, (255, 0, 0), 400, 600)
