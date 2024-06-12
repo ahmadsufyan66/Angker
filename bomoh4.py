@@ -187,7 +187,7 @@ pygame.display.set_caption('ANGKER')
 
 # Create players
 player1 = Player("Player 1", True,80)  # human
-player2 = Player("Player 2", False,120, aggressiveness=1.5,)  # ai (more aggressive)
+player2 = Player("Player 2", False, 120, aggressiveness = 1.5,)  # ai (more aggressive)
 
 # Create attacking area
 rect_1 = pygame.Rect(0, 170, SCREEN_WIDTH, 490)
