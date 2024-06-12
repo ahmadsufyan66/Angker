@@ -71,7 +71,7 @@ class Card:
             
 # Define Player class
 class Player:
-    def __init__(self, name, is_human,initial_life_points ,aggressiveness=1.0):
+    def __init__(self, name, is_human,initial_life_points ,aggressiveness=1.5):
         self.name = name
         self.is_human = is_human
         self.deck = []
@@ -176,7 +176,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('ANGKER')
 
 # Create players
-player1 = Player("Player 1", True,60)  # human
+player1 = Player("Player 1", True,80)  # human
 player2 = Player("Player 2", False,120, aggressiveness=1.5,)  # ai (more aggressive)
 
 # Create attacking area
