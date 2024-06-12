@@ -270,7 +270,7 @@ def draw_life_scale(screen, player, x, y):
     # Draw the current life scale (green)
     pygame.draw.rect(screen, GREEN, (x, y, current_width, height))
 
-    # Display player life points below the health bar
+    # Display player life points below the health bar5
     life_points_text = dialogue_font.render(f'{player.life_points}', True, WHITE)
     if player.name == "Player 2":
         screen.blit(life_points_text, (x, y + height + 5))
