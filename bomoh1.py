@@ -87,11 +87,7 @@ class Player:
         self.skill_deck = []
         self.hand = []
         self.life_points = 100
-<<<<<<< HEAD
         self.initial_life_points = 100
-=======
-        self.initial_life_points =80
->>>>>>> main
         self.additional_play = False  # Flag to allow an additional card play
         self.half_next_attack = False  # Flag to indicate if the next attack should be halved
         self.aggressiveness = aggressiveness
@@ -221,17 +217,17 @@ card_images = ["card_images/kappa.png", "card_images/pocong.png", "card_images/f
 
 # Customize attack and defense for each card
 cards_data = [
-    {"name": "Kappa", "attack": 5, "defense": 7, "image": card_images[0]},
-    {"name": "Pocong", "attack": 5, "defense": 9, "image": card_images[1]}, 
-    {"name": "Freddy Krueger", "attack": 5, "defense": 11, "image": card_images[2]},
-    {"name": "Saka", "attack": 5, "defense": 11, "image": card_images[3]},
-    {"name": "Pontianak", "attack": 5, "defense": 11, "image": card_images[4]},
-    {"name": "Kappa (skill)", "attack": 5, "defense": 7, "image": card_images[5]},
-    {"name": "Pocong (skill)", "attack": 5, "defense": 9, "image": card_images[6]},
-    {"name": "Freddy Krueger (skill)", "attack": 5, "defense": 11, "image": card_images[7]},
-    {"name": "Saka (skill)", "attack": 5, "defense": 11, "image": card_images[8]},
-    {"name": "Pontianak (skill)", "attack": 5, "defense": 11, "image": card_images[9]} 
-]   
+    {"name": "Kappa", "attack": 15, "defense": 5, "image": card_images[0]},  # Increase attack to 15 and lower defense to 5
+    {"name": "Pocong", "attack": 13, "defense": 7, "image": card_images[1]},  # Increase attack to 13 and lower defense to 7
+    {"name": "Freddy Krueger", "attack": 14, "defense": 8, "image": card_images[2]},  # Increase attack to 14 and lower defense to 8
+    {"name": "Saka", "attack": 12, "defense": 6, "image": card_images[3]},  # Increase attack to 12 and lower defense to 6
+    {"name": "Pontianak", "attack": 16, "defense": 9, "image": card_images[4]},  # Increase attack to 16 and lower defense to 9
+    {"name": "Kappa (skill)", "attack": 15, "defense": 5, "image": card_images[5]},  # Increase attack to 14 and lower defense to 5
+    {"name": "Pocong (skill)", "attack": 13, "defense": 7, "image": card_images[6]},  # Increase attack to 15 and lower defense to 7
+    {"name": "Freddy Krueger (skill)", "attack": 14, "defense": 8, "image": card_images[7]},  # Increase attack to 14 and lower defense to 8
+    {"name": "Saka (skill)", "attack": 12, "defense": 6, "image": card_images[8]},  # Increase attack to 13 and lower defense to 6
+    {"name": "Pontianak (skill)", "attack": 16, "defense": 9, "image": card_images[9]}  # Increase attack to 16 and lower defense to 9
+]
 
 
 
@@ -446,6 +442,7 @@ while running:
         call(('python', 'lose.py'))
 
     pygame.display.flip()
+    
 
 # Quit Pygame
 pygame.quit()
