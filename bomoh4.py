@@ -13,6 +13,15 @@ from subprocess import call
 SCREEN_WIDTH = 1535
 SCREEN_HEIGHT = 810
 
+#Background music 
+pygame.mixer.pre_init(44100, 16, 2, 4096)
+pygame.init()
+
+#Play background music
+pygame.mixer.music.load("combat page background sound.mp3")
+pygame.mixer.music.set_volume(2)
+pygame.mixer.music.play(-1)
+
 # Font
 dialogue_font = pygame.font.Font('GOODDC__.TTF', 40)
 
@@ -77,7 +86,8 @@ class Player:
         self.deck = []
         self.skill_deck = []
         self.hand = []
-        self.life_points = initial_life_points
+        self.life_points = 80
+        self.initial_life_points = 120
         self.additional_play = False  # Flag to allow an additional card play
         self.aggressiveness = aggressiveness  # Aggressiveness parameter for AI
 

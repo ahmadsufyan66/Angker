@@ -86,7 +86,8 @@ class Player:
         self.deck = []
         self.skill_deck = []
         self.hand = []
-        self.life_points = initial_life_points 
+        self.life_points = 100
+        self.initial_life_points =80
         self.additional_play = False  # Flag to allow an additional card play
 <<<<<<< HEAD
         self.half_next_attack = False  # Flag to indicate if the next attack should be halved
