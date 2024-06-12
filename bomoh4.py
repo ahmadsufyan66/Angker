@@ -19,7 +19,7 @@ pygame.init()
 
 #Play background music
 pygame.mixer.music.load("combat page background sound.mp3")
-pygame.mixer.music.set_volume(2)
+pygame.mixer.music.set_volume(10)
 pygame.mixer.music.play(-1)
 
 # Font
