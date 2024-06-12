@@ -71,15 +71,15 @@ class Card:
             
 # Define Player class
 class Player:
-    def __init__(self, name, is_human, initial_life_points,aggressiveness=0.7):
+    def __init__(self, name, is_human,initial_life_points ,aggressiveness=1.5):
         self.name = name
         self.is_human = is_human
         self.deck = []
         self.skill_deck = []
         self.hand = []
-        self.life_points = initial_life_points 
+        self.life_points = initial_life_points
         self.additional_play = False  # Flag to allow an additional card play
-        self.aggressiveness = aggressiveness
+        self.aggressiveness = aggressiveness  # Aggressiveness parameter for AI
 
     def shuffle(self, num=1):
         length = len(self.deck)
@@ -176,8 +176,8 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('ANGKER')
 
 # Create players
-player1 = Player("Player 1", True, 100)  # human
-player2 = Player("Player 2", False, 80, aggressiveness=0.5,)  # ai
+player1 = Player("Player 1", True,80)  # human
+player2 = Player("Player 2", False,120, aggressiveness=1.5,)  # ai (more aggressive)
 
 # Create attacking area
 rect_1 = pygame.Rect(0, 170, SCREEN_WIDTH, 490)
@@ -199,8 +199,6 @@ cards_data = [
     {"name": "Saka (skill)", "attack": 13, "defense": 6, "image": card_images[8]},  # Increase attack to 13 and lower defense to 6
     {"name": "Pontianak (skill)", "attack": 16, "defense": 9, "image": card_images[9]}  # Increase attack to 16 and lower defense to 9
 ]
-
-
 
 # Populate decks with custom cards
 for card_data in cards_data[0:5]:
@@ -283,9 +281,7 @@ while running:
                     print("")
                 elif turn_counter == 1:  # On the second spacebar press, allow player 1 to play a card
                     player1_turn = True
-                elif len(player1.hand)<3:
                     player1.draw_cards()
-                elif len(player2.hand)<3:
                     player2.draw_cards()
             elif event.key == pygame.K_RETURN and done and dialogue_active:
                 dialogue_active = False
@@ -399,3 +395,5 @@ while running:
 
 # Quit Pygame
 pygame.quit()
+
+

@@ -103,8 +103,8 @@ while run:
         while pygame.mixer.music.get_busy():  # Wait for music to finish playing
           pygame.time.Clock().tick(10)  # Control the loop's speed
         pygame.quit()
-        call(('python', "test game(ieman).py"))
-        print('OPEN COMBAT PAGE')
+        call(('python', "bomoh4.py"))
+        print('OPEN bomoh4.py')
 
     #event handler
     for event in pygame.event.get():
