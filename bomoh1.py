@@ -54,7 +54,6 @@ class Card:
         self.image = self.base_image.copy()  # Create a copy of the base image
         self.rect = self.image.get_rect()
         self.is_dragging = False
-#        self.randomize_effect = randomize_effect
         self.click_count = 0  # Initialize click count attribute
         self.hovered = False  # Track whether the card is being hovered over
 
@@ -78,8 +77,8 @@ class Player:
         self.deck = []
         self.skill_deck = []
         self.hand = []
-        self.life_points = 100
-        self.initial_life_points = 100  
+        self.life_points = 120
+        self.initial_life_points = 80  
         self.additional_play = False  # Flag to allow an additional card play
 
     def shuffle(self, num=1):
@@ -128,14 +127,10 @@ class Player:
     def play_card(self, card_index, opponent):
         if 0 <= card_index < len(self.hand):
             card = self.hand.pop(card_index)
-            if card.attack > opponent.life_points:
+            if card.attack > opponent.life_points + card.defense:
                 opponent.life_points = 0
             else:
                 opponent.life_points -= card.attack
-            # Check for trigger effect
-#            if card.randomize_effect:
-#                card.randomize_effect(self, opponent)
-            # Check for card skill
             if card.name == "Kappa (skill)":
                 print("")
                 print(f"{self.name} +10 HP")
@@ -168,9 +163,11 @@ class Player:
 
     def ai_play(self, opponent):
         if self.hand:
-            card_index = random.randint(0, len(self.hand) - 1)
+            # Improve AI strategy by choosing the most effective card
+            card_index = max(range(len(self.hand)), key=lambda i: self.hand[i].attack)
             return self.play_card(card_index, opponent)
         return None
+
 
 # Define a function to handle the randomization of the effect
 #def randomize_effect(player, opponent):
@@ -209,17 +206,19 @@ card_images = ["card_images/kappa.png", "card_images/pocong.png", "card_images/f
 
 # Customize attack and defense for each card
 cards_data = [
-    {"name": "Kappa", "attack": 5, "defense": 7, "image": card_images[0]}, #"trigger_effect": randomize_effect},
-    {"name": "Pocong", "attack": 5, "defense": 9, "image": card_images[1]}, #"trigger_effect": randomize_effect},
-    {"name": "Freddy Krueger", "attack": 5, "defense": 11, "image": card_images[2]},#"trigger_effect": randomize_effect},
-    {"name": "Saka", "attack": 5, "defense": 11, "image": card_images[3]}, #"trigger_effect": randomize_effect},
-    {"name": "Pontianak", "attack": 5, "defense": 11, "image": card_images[4]}, #"trigger_effect": randomize_effect},  # Trigger card example
-    {"name": "Kappa (skill)", "attack": 5, "defense": 7, "image": card_images[5]}, #"trigger_effect": randomize_effect},
-    {"name": "Pocong (skill)", "attack": 5, "defense": 9, "image": card_images[6]}, #"trigger_effect": randomize_effect},
-    {"name": "Freddy Krueger (skill)", "attack": 5, "defense": 11, "image": card_images[7]}, #"trigger_effect": randomize_effect},
-    {"name": "Saka (skill)", "attack": 5, "defense": 11, "image": card_images[8]}, #"trigger_effect": randomize_effect},
-    {"name": "Pontianak (skill)", "attack": 5, "defense": 11, "image": card_images[9]} #"trigger_effect": randomize_effect} 
+    {"name": "Kappa", "attack": 15, "defense": 5, "image": card_images[0]},  # Increase attack to 15 and lower defense to 5
+    {"name": "Pocong", "attack": 13, "defense": 7, "image": card_images[1]},  # Increase attack to 13 and lower defense to 7
+    {"name": "Freddy Krueger", "attack": 14, "defense": 8, "image": card_images[2]},  # Increase attack to 14 and lower defense to 8
+    {"name": "Saka", "attack": 12, "defense": 6, "image": card_images[3]},  # Increase attack to 12 and lower defense to 6
+    {"name": "Pontianak", "attack": 16, "defense": 9, "image": card_images[4]},  # Increase attack to 16 and lower defense to 9
+    {"name": "Kappa (skill)", "attack": 14, "defense": 5, "image": card_images[5]},  # Increase attack to 14 and lower defense to 5
+    {"name": "Pocong (skill)", "attack": 15, "defense": 7, "image": card_images[6]},  # Increase attack to 15 and lower defense to 7
+    {"name": "Freddy Krueger (skill)", "attack": 14, "defense": 8, "image": card_images[7]},  # Increase attack to 14 and lower defense to 8
+    {"name": "Saka (skill)", "attack": 13, "defense": 6, "image": card_images[8]},  # Increase attack to 13 and lower defense to 6
+    {"name": "Pontianak (skill)", "attack": 16, "defense": 9, "image": card_images[9]}  # Increase attack to 16 and lower defense to 9
 ]
+
+
 
 # Populate decks with custom cards
 for card_data in cards_data[0:5]:
@@ -281,23 +280,31 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 if turn_counter < 1 or (not player1.hand and not player2.hand):  # First turn or both hands are empty
-                    player1.draw_cards()
-                    player2.draw_cards()
+                    while len(player1.hand) <3:
+                        player1.draw_cards()
+                    while len(player2.hand) <3:
+                        player2.draw_cards()
                     turn_counter += 1  # Increment turn counter
                     print("")
                     print(f"{player1.name} and {player2.name} draw cards.")
                     print("")
                 elif not player1.hand and len(player2.hand) > 0:  # Player 1's hand is empty and player 2 has cards
-                    # Draw cards for player 1
-                    player1.draw_cards()
+                    #draw card for player 1
+                    while len(player1.hand) <3:
+                        player1.draw_cards()
                     # Draw cards for player 2
-                    player2.draw_cards()
+                    while len(player2.hand) <3:
+                        player2.draw_cards()
                     turn_counter += 1  # Increment turn counter
                     print("")
                     print(f"{player1.name} and {player2.name} draw cards until they have the required number of cards.")
                     print("")
                 elif turn_counter == 1:  # On the second spacebar press, allow player 1 to play a card
                     player1_turn = True
+                elif len(player1.hand)<3:
+                    player1.draw_cards()
+                elif len(player2.hand)<3:
+                    player2.draw_cards()
             elif event.key == pygame.K_RETURN and done and dialogue_active:
                 dialogue_active = False
                 active_message = None
