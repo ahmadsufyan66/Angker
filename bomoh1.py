@@ -50,37 +50,47 @@ class Card:
         self.attack = attack
         self.defense = defense
         self.base_image = pygame.image.load(image)
-        self.base_image = pygame.transform.scale(self.base_image, (150, 250))
+        self.base_image = pygame.transform.scale(self.base_image, (250, 250))
         self.image = self.base_image.copy()  # Create a copy of the base image
         self.rect = self.image.get_rect()
         self.is_dragging = False
-#        self.randomize_effect = randomize_effect
         self.click_count = 0  # Initialize click count attribute
         self.hovered = False  # Track whether the card is being hovered over
+        self.target_size = (250, 250)  # Target size for scaling
+        self.current_size = (250, 250)  # Current size for smooth scaling
 
     def update(self, mouse_pos):
         if self.rect.collidepoint(mouse_pos):
             self.hovered = True
-            # Increase the size of the card when hovered over
-            self.image = pygame.transform.scale(self.base_image, (180, 270))
+            self.target_size = (280, 280)  # Target size when hovered
         else:
             self.hovered = False
-            self.image = self.base_image.copy()  # Reset the image to its original size
+            self.target_size = (250, 250)  # Original size when not hovered
+
+        # Smooth scaling effect
+        self.current_size = (
+            self.current_size[0] + (self.target_size[0] - self.current_size[0]) * 0.1,
+            self.current_size[1] + (self.target_size[1] - self.current_size[1]) * 0.1
+        )
+        self.image = pygame.transform.scale(self.base_image, self.current_size)
+        self.rect = self.image.get_rect(center=self.rect.center)
 
     def render(self, surface):
         surface.blit(self.image, self.rect)
             
 # Define Player class
 class Player:
-    def __init__(self, name, is_human):
+    def __init__(self, name, is_human, initial_life_points, aggressiveness=0.7):
         self.name = name
         self.is_human = is_human
         self.deck = []
         self.skill_deck = []
         self.hand = []
         self.life_points = 100
-        self.initial_life_points = 100  
+        self.initial_life_points = 100
         self.additional_play = False  # Flag to allow an additional card play
+        self.half_next_attack = False  # Flag to indicate if the next attack should be halved
+        self.aggressiveness = aggressiveness
 
     def shuffle(self, num=1):
         length = len(self.deck)
@@ -128,77 +138,75 @@ class Player:
     def play_card(self, card_index, opponent):
         if 0 <= card_index < len(self.hand):
             card = self.hand.pop(card_index)
-            if card.attack > opponent.life_points:
-                opponent.life_points = 0
-            else:
-                opponent.life_points -= card.attack
-            # Check for trigger effect
-#            if card.randomize_effect:
-#                card.randomize_effect(self, opponent)
-            # Check for card skill
-            if card.name == "Kappa (skill)":
-                print("")
-                print(f"{self.name} +10 HP")
-                print(f"{self.name} has {self.life_points} remaining.")
-                print("")
-                self.life_points += 10
-            if card.name == "Pocong (skill)":
-                print("")
-                print("-Will insert skill-")
-                print("")
+            attack_points = card.attack
+            print(f"Playing card: {card.name}")
+            print(f"Initial attack points: {attack_points}")
+            print(f"Opponent's half_next_attack flag: {opponent.half_next_attack}")
+
+            # Apply halving effect if the flag is set
+            if self.half_next_attack:
+                attack_points //= 2
+                self.half_next_attack = False  # Reset the flag after applying the effect
+                print(f"Attack points after halving: {attack_points}")
+
+            # Update attack points if it's a Freddy Krueger (skill) card
             if card.name == "Freddy Krueger (skill)":
                 lost_life_points = self.initial_life_points - self.life_points
-                card.attack += lost_life_points  # Increase attack based on lost life points
-                print("")
-                print(f"Freddy Krueger attacks with {card.attack} points.")
-                print("")
+                attack_points += lost_life_points  # Increase attack based on lost life points
+                print(f"Freddy Krueger attack points with lost life points: {attack_points}")
+
+            # Update attack points if it's a Saka (skill) card
             if card.name == "Saka (skill)":
                 lost_life_points = self.initial_life_points - self.life_points
-                card.attack += lost_life_points  # Increase attack based on lost life points
-                print("")
-                print(f"Saka attacks with {card.attack} points.")
-                print("")
-            if card.name == "Pontianak (skill)":
-                print("")
+                attack_points += lost_life_points  # Increase attack based on lost life points
+                print(f"Saka attack points with lost life points: {attack_points}")
+
+
+            # Apply attack to opponent's life points
+            if attack_points > opponent.life_points + card.defense:
+                opponent.life_points = 0
+            else:
+                opponent.life_points -= attack_points
+
+            print(f"Opponent's remaining life points: {opponent.life_points}")
+
+            # Check for other card skills
+            if card.name == "Kappa (skill)":
+                print(f"{self.name} +10 HP")
+                self.life_points += 10
+                print(f"{self.name} has {self.life_points} remaining.")
+            
+            elif card.name == "Pocong (skill)":
+                print(f"{opponent.name}'s next attack will be halved!")
+                opponent.half_next_attack = True  # Set the flag for halving the next attack
+                print(f"Set opponent's half_next_attack flag to: {opponent.half_next_attack}")
+
+            elif card.name == "Pontianak (skill)":
                 print(f"{self.name} gains another turn!")
-                print("")
                 self.additional_play = True
+
             return card
         return None
 
+
+
     def ai_play(self, opponent):
         if self.hand:
-            card_index = random.randint(0, len(self.hand) - 1)
+            # Improve AI strategy by choosing the most effective card
+            if self.aggressiveness >= 1.0:
+                card_index = max(range(len(self.hand)), key=lambda i: self.hand[i].attack)
+            else:
+                card_index = random.randint(0, len(self.hand) - 1)
             return self.play_card(card_index, opponent)
         return None
-
-# Define a function to handle the randomization of the effect
-#def randomize_effect(player, opponent):
-#    # Randomly choose between doubling attack or healing +10
-#    choice = random.choice(["more_attack", "heal"])
-#    if choice == "more_attack":
-#        # increase the attack of the first card in player's hand
-#        if player.hand:
-#            card_attack = 10 + player.hand[0].attack
-#            opponent.life_points -= card_attack
-#            print("")
-#            print(f"{player.name} plus 10 attack with {player.hand[0].name}!")
-#            print(f"{opponent.name} has {opponent.life_points} life points remaining.")
-#            print("")
-#    elif choice == "heal":
-#        # Heal +10 to the player
-#        player.life_points += 10
-#        print("")
-#        print(f"{player.name} heals 10 life points!")
-#        print("")
 
 # Create display window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('ANGKER')
 
 # Create players
-player1 = Player("Player 1", True)  # human
-player2 = Player("Player 2", False)  # ai
+player1 = Player("Player 1", True, 100)  # human
+player2 = Player("Player 2", False, 80, aggressiveness=0.5,)  # ai
 
 # Create attacking area
 rect_1 = pygame.Rect(0, 170, SCREEN_WIDTH, 490)
@@ -209,17 +217,19 @@ card_images = ["card_images/kappa.png", "card_images/pocong.png", "card_images/f
 
 # Customize attack and defense for each card
 cards_data = [
-    {"name": "Kappa", "attack": 5, "defense": 7, "image": card_images[0]}, #"trigger_effect": randomize_effect},
-    {"name": "Pocong", "attack": 5, "defense": 9, "image": card_images[1]}, #"trigger_effect": randomize_effect},
-    {"name": "Freddy Krueger", "attack": 5, "defense": 11, "image": card_images[2]},#"trigger_effect": randomize_effect},
-    {"name": "Saka", "attack": 5, "defense": 11, "image": card_images[3]}, #"trigger_effect": randomize_effect},
-    {"name": "Pontianak", "attack": 5, "defense": 11, "image": card_images[4]}, #"trigger_effect": randomize_effect},  # Trigger card example
-    {"name": "Kappa (skill)", "attack": 5, "defense": 7, "image": card_images[5]}, #"trigger_effect": randomize_effect},
-    {"name": "Pocong (skill)", "attack": 5, "defense": 9, "image": card_images[6]}, #"trigger_effect": randomize_effect},
-    {"name": "Freddy Krueger (skill)", "attack": 5, "defense": 11, "image": card_images[7]}, #"trigger_effect": randomize_effect},
-    {"name": "Saka (skill)", "attack": 5, "defense": 11, "image": card_images[8]}, #"trigger_effect": randomize_effect},
-    {"name": "Pontianak (skill)", "attack": 5, "defense": 11, "image": card_images[9]} #"trigger_effect": randomize_effect} 
+    {"name": "Kappa", "attack": 15, "defense": 5, "image": card_images[0]},  # Increase attack to 15 and lower defense to 5
+    {"name": "Pocong", "attack": 13, "defense": 7, "image": card_images[1]},  # Increase attack to 13 and lower defense to 7
+    {"name": "Freddy Krueger", "attack": 14, "defense": 8, "image": card_images[2]},  # Increase attack to 14 and lower defense to 8
+    {"name": "Saka", "attack": 12, "defense": 6, "image": card_images[3]},  # Increase attack to 12 and lower defense to 6
+    {"name": "Pontianak", "attack": 16, "defense": 9, "image": card_images[4]},  # Increase attack to 16 and lower defense to 9
+    {"name": "Kappa (skill)", "attack": 15, "defense": 5, "image": card_images[5]},  # Increase attack to 14 and lower defense to 5
+    {"name": "Pocong (skill)", "attack": 13, "defense": 7, "image": card_images[6]},  # Increase attack to 15 and lower defense to 7
+    {"name": "Freddy Krueger (skill)", "attack": 14, "defense": 8, "image": card_images[7]},  # Increase attack to 14 and lower defense to 8
+    {"name": "Saka (skill)", "attack": 12, "defense": 6, "image": card_images[8]},  # Increase attack to 13 and lower defense to 6
+    {"name": "Pontianak (skill)", "attack": 16, "defense": 9, "image": card_images[9]}  # Increase attack to 16 and lower defense to 9
 ]
+
+
 
 # Populate decks with custom cards
 for card_data in cards_data[0:5]:
@@ -236,9 +246,26 @@ for card_data in cards_data[5:]:
 player1.shuffle()
 player2.shuffle()
 
-#Draw life scale
-def draw_life_scale(player, x, y):
-    pygame.draw.rect(screen, GREEN, (x, y, player.life_points * 2, 20))
+# Draw life scale function
+def draw_life_scale(screen, player, x, y):
+    max_width = 200  # Maximum width of the life scale
+    height = 20  # Height of the life scale
+
+    # Calculate the current width of the life scale based on life points
+    current_width = max(0, (player.life_points / player.initial_life_points) * max_width)
+
+    # Draw the life scale background (black)
+    pygame.draw.rect(screen, BLACK, (x, y, max_width, height))
+
+    # Draw the current life scale (green)
+    pygame.draw.rect(screen, GREEN, (x, y, current_width, height))
+
+    # Display player life points below the health bar
+    life_points_text = dialogue_font.render(f'{player.life_points}', True, WHITE)
+    if player.name == "Player 2":
+        screen.blit(life_points_text, (x, y + height + 5))
+    else:
+        screen.blit(life_points_text, (x, y + height + 5))
 
 # Drag and drop function
 boxes = []
@@ -281,23 +308,31 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 if turn_counter < 1 or (not player1.hand and not player2.hand):  # First turn or both hands are empty
-                    player1.draw_cards()
-                    player2.draw_cards()
+                    while len(player1.hand) <3:
+                        player1.draw_cards()
+                    while len(player2.hand) <3:
+                        player2.draw_cards()
                     turn_counter += 1  # Increment turn counter
                     print("")
                     print(f"{player1.name} and {player2.name} draw cards.")
                     print("")
                 elif not player1.hand and len(player2.hand) > 0:  # Player 1's hand is empty and player 2 has cards
-                    # Draw cards for player 1
-                    player1.draw_cards()
+                    #draw card for player 1
+                    while len(player1.hand) <3:
+                        player1.draw_cards()
                     # Draw cards for player 2
-                    player2.draw_cards()
+                    while len(player2.hand) <3:
+                        player2.draw_cards()
                     turn_counter += 1  # Increment turn counter
                     print("")
                     print(f"{player1.name} and {player2.name} draw cards until they have the required number of cards.")
                     print("")
                 elif turn_counter == 1:  # On the second spacebar press, allow player 1 to play a card
                     player1_turn = True
+                elif len(player1.hand)<3:
+                    player1.draw_cards()
+                elif len(player2.hand)<3:
+                    player2.draw_cards()
             elif event.key == pygame.K_RETURN and done and dialogue_active:
                 dialogue_active = False
                 active_message = None
@@ -386,8 +421,8 @@ while running:
         screen.blit(card.image, (500 + i * 200, 20))
      
     # Draw life point scales
-    draw_life_scale(player1, 50, SCREEN_HEIGHT - 50)
-    draw_life_scale(player2, 50, 30)
+    draw_life_scale(screen, player1, 50, SCREEN_HEIGHT - 80)
+    draw_life_scale(screen, player2, 50, 30)
 
     # Draw dialogue if active
     if dialogue_active and active_message is not None:
@@ -407,6 +442,7 @@ while running:
         call(('python', 'lose.py'))
 
     pygame.display.flip()
+    
 
 # Quit Pygame
 pygame.quit()
