@@ -87,16 +87,16 @@ while run:
         while pygame.mixer.music.get_busy():  # Wait for music to finish playing
           pygame.time.Clock().tick(10)  # Control the loop's speed
         pygame.quit()
-        call(('python', "test game(ieman).py"))
-        print('OPEN COMBAT PAGE')
+        call(('python', "bomoh2.py"))
+        print('OPEN bomoh2.py')
 
     if bomoh3_btn.draw(screen):
         pygame.mixer.music.play(0)
         while pygame.mixer.music.get_busy():  # Wait for music to finish playing
           pygame.time.Clock().tick(10)  # Control the loop's speed
         pygame.quit()
-        call(('python', "test game(ieman).py"))
-        print('OPEN COMBAT PAGE')
+        call(('python', "bomoh3.py"))
+        print('OPEN bomoh3.py')
 
     if bomoh4_btn.draw(screen):
         pygame.mixer.music.play(0)
