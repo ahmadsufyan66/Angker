@@ -77,8 +77,8 @@ class Player:
         self.deck = []
         self.skill_deck = []
         self.hand = []
-        self.life_points = 120
-        self.initial_life_points = 80  
+        self.life_points = 80
+        self.initial_life_points = 120  
         self.additional_play = False  # Flag to allow an additional card play
 
     def shuffle(self, num=1):
