@@ -387,10 +387,10 @@ while running:
     draw_life_scale(player1, 50, SCREEN_HEIGHT - 50)
     draw_life_scale(player2, 50, 30)
 
-    # Draw dialogue if active
     if dialogue_active and active_message is not None:
         snip, counter = render_dialogue(messages[active_message], counter, speed)
-        screen.blit(snip, (50, SCREEN_HEIGHT - 100))
+        text_rect = snip.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        screen.blit(snip, text_rect.topleft)
         if counter // speed >= len(messages[active_message]):
             done = True
 
