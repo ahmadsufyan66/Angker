@@ -13,6 +13,15 @@ from subprocess import call
 SCREEN_WIDTH = 1535
 SCREEN_HEIGHT = 810
 
+#Background music 
+pygame.mixer.pre_init(44100, 16, 2, 4096)
+pygame.init()
+
+#Play background music
+pygame.mixer.music.load("combat page background sound.mp3")
+pygame.mixer.music.set_volume(10)
+pygame.mixer.music.play(-1)
+
 # Font
 dialogue_font = pygame.font.Font('GOODDC__.TTF', 40)
 
@@ -35,6 +44,7 @@ speed = 3
 active_message = None
 done = False
 dialogue_active = False
+dialogue_triggered = False
 
 
 # Define colors
@@ -373,10 +383,11 @@ while running:
                             print(f"{player1.name} plays {played_card.name}.")
                             print(f"{player2.name} has {player2.life_points} life points remaining.")
                             print("")
-                            if player2.life_points <= 50 and active_message is None:
+                            if player2.life_points <= 50 and not dialogue_triggered:
                                 dialogue_active = True
                                 active_message = 1
                                 counter = 0
+                                dialogue_triggered = True
                         # Check if player can play another card
                         if player1.additional_play:
                             player1_turn = True  # Allow player 1 to play another card
@@ -397,10 +408,11 @@ while running:
             print(f"{player2.name} plays {played_card.name}.")
             print(f"{player1.name} has {player1.life_points} life points remaining.")
             print("")
-            if player1.life_points <= 50 and active_message is None:
+            if player1.life_points <= 50 and not dialogue_triggered:
                 dialogue_active = True
                 active_message = 0
                 counter = 0
+                dialogue_triggered = True
         # Switch to player 1's turn after player 2's turn
         player1_turn = True
 
@@ -424,10 +436,10 @@ while running:
     draw_life_scale(screen, player1, 50, SCREEN_HEIGHT - 80)
     draw_life_scale(screen, player2, 50, 30)
 
-    # Draw dialogue if active
     if dialogue_active and active_message is not None:
         snip, counter = render_dialogue(messages[active_message], counter, speed)
-        screen.blit(snip, (50, SCREEN_HEIGHT - 100))
+        text_rect = snip.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        screen.blit(snip, text_rect.topleft)
         if counter // speed >= len(messages[active_message]):
             done = True
 
