@@ -80,20 +80,21 @@ class Card:
             
 # Define Player class
 class Player:
-    def __init__(self, name, is_human, initial_life_points,aggressiveness=0.7):
+    def __init__(self, name, is_human, initial_life_points, aggressiveness=0.7):
         self.name = name
         self.is_human = is_human
         self.deck = []
         self.skill_deck = []
         self.hand = []
         self.life_points = 100
-        self.initial_life_points =80
-        self.additional_play = False  # Flag to allow an additional card play
 <<<<<<< HEAD
-        self.half_next_attack = False  # Flag to indicate if the next attack should be halved
+        self.initial_life_points = 100
 =======
-        self.aggressiveness = aggressiveness
+        self.initial_life_points =80
 >>>>>>> main
+        self.additional_play = False  # Flag to allow an additional card play
+        self.half_next_attack = False  # Flag to indicate if the next attack should be halved
+        self.aggressiveness = aggressiveness
 
     def shuffle(self, num=1):
         length = len(self.deck)
@@ -141,35 +142,18 @@ class Player:
     def play_card(self, card_index, opponent):
         if 0 <= card_index < len(self.hand):
             card = self.hand.pop(card_index)
-<<<<<<< HEAD
             attack_points = card.attack
             print(f"Playing card: {card.name}")
             print(f"Initial attack points: {attack_points}")
             print(f"Opponent's half_next_attack flag: {opponent.half_next_attack}")
 
             # Apply halving effect if the flag is set
-            if opponent.half_next_attack:
+            if self.half_next_attack:
                 attack_points //= 2
-                opponent.half_next_attack = False  # Reset the flag after applying the effect
+                self.half_next_attack = False  # Reset the flag after applying the effect
                 print(f"Attack points after halving: {attack_points}")
 
             # Update attack points if it's a Freddy Krueger (skill) card
-=======
-            if card.attack > opponent.life_points + card.defense:
-                opponent.life_points = 0
-            else:
-                opponent.life_points -= card.attack
-            if card.name == "Kappa (skill)":
-                print("")
-                print(f"{self.name} +10 HP")
-                print(f"{self.name} has {self.life_points} remaining.")
-                print("")
-                self.life_points += 10
-            if card.name == "Pocong (skill)":
-                print("")
-                print("-Will insert skill-")
-                print("")
->>>>>>> main
             if card.name == "Freddy Krueger (skill)":
                 lost_life_points = self.initial_life_points - self.life_points
                 attack_points += lost_life_points  # Increase attack based on lost life points
@@ -181,8 +165,9 @@ class Player:
                 attack_points += lost_life_points  # Increase attack based on lost life points
                 print(f"Saka attack points with lost life points: {attack_points}")
 
+
             # Apply attack to opponent's life points
-            if attack_points > opponent.life_points:
+            if attack_points > opponent.life_points + card.defense:
                 opponent.life_points = 0
             else:
                 opponent.life_points -= attack_points
@@ -194,20 +179,19 @@ class Player:
                 print(f"{self.name} +10 HP")
                 self.life_points += 10
                 print(f"{self.name} has {self.life_points} remaining.")
+            
             elif card.name == "Pocong (skill)":
                 print(f"{opponent.name}'s next attack will be halved!")
                 opponent.half_next_attack = True  # Set the flag for halving the next attack
                 print(f"Set opponent's half_next_attack flag to: {opponent.half_next_attack}")
-            elif card.name == "Saka (skill)":
-                lost_life_points = self.initial_life_points - self.life_points
-                attack_points += lost_life_points  # Increase attack based on lost life points
-                print(f"Saka attacks with {attack_points} points.")
+
             elif card.name == "Pontianak (skill)":
                 print(f"{self.name} gains another turn!")
                 self.additional_play = True
 
             return card
         return None
+
 
 
     def ai_play(self, opponent):
@@ -237,17 +221,17 @@ card_images = ["card_images/kappa.png", "card_images/pocong.png", "card_images/f
 
 # Customize attack and defense for each card
 cards_data = [
-    {"name": "Kappa", "attack": 15, "defense": 5, "image": card_images[0]},  # Increase attack to 15 and lower defense to 5
-    {"name": "Pocong", "attack": 13, "defense": 7, "image": card_images[1]},  # Increase attack to 13 and lower defense to 7
-    {"name": "Freddy Krueger", "attack": 14, "defense": 8, "image": card_images[2]},  # Increase attack to 14 and lower defense to 8
-    {"name": "Saka", "attack": 12, "defense": 6, "image": card_images[3]},  # Increase attack to 12 and lower defense to 6
-    {"name": "Pontianak", "attack": 16, "defense": 9, "image": card_images[4]},  # Increase attack to 16 and lower defense to 9
-    {"name": "Kappa (skill)", "attack": 14, "defense": 5, "image": card_images[5]},  # Increase attack to 14 and lower defense to 5
-    {"name": "Pocong (skill)", "attack": 15, "defense": 7, "image": card_images[6]},  # Increase attack to 15 and lower defense to 7
-    {"name": "Freddy Krueger (skill)", "attack": 14, "defense": 8, "image": card_images[7]},  # Increase attack to 14 and lower defense to 8
-    {"name": "Saka (skill)", "attack": 13, "defense": 6, "image": card_images[8]},  # Increase attack to 13 and lower defense to 6
-    {"name": "Pontianak (skill)", "attack": 16, "defense": 9, "image": card_images[9]}  # Increase attack to 16 and lower defense to 9
-]
+    {"name": "Kappa", "attack": 5, "defense": 7, "image": card_images[0]},
+    {"name": "Pocong", "attack": 5, "defense": 9, "image": card_images[1]}, 
+    {"name": "Freddy Krueger", "attack": 5, "defense": 11, "image": card_images[2]},
+    {"name": "Saka", "attack": 5, "defense": 11, "image": card_images[3]},
+    {"name": "Pontianak", "attack": 5, "defense": 11, "image": card_images[4]},
+    {"name": "Kappa (skill)", "attack": 5, "defense": 7, "image": card_images[5]},
+    {"name": "Pocong (skill)", "attack": 5, "defense": 9, "image": card_images[6]},
+    {"name": "Freddy Krueger (skill)", "attack": 5, "defense": 11, "image": card_images[7]},
+    {"name": "Saka (skill)", "attack": 5, "defense": 11, "image": card_images[8]},
+    {"name": "Pontianak (skill)", "attack": 5, "defense": 11, "image": card_images[9]} 
+]   
 
 
 
