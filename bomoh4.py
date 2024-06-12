@@ -44,7 +44,7 @@ speed = 3
 active_message = None
 done = False
 dialogue_active = False
-
+dialogue_triggered = False
 
 # Define colors
 WHITE = (255, 255, 255)
@@ -333,10 +333,11 @@ while running:
                             print(f"{player1.name} plays {played_card.name}.")
                             print(f"{player2.name} has {player2.life_points} life points remaining.")
                             print("")
-                            if player2.life_points <= 50 and active_message is None:
+                            if player2.life_points <= 50 and not dialogue_triggered:
                                 dialogue_active = True
                                 active_message = 1
                                 counter = 0
+                                dialogue_triggered = True
                         # Check if player can play another card
                         if player1.additional_play:
                             player1_turn = True  # Allow player 1 to play another card
@@ -357,10 +358,11 @@ while running:
             print(f"{player2.name} plays {played_card.name}.")
             print(f"{player1.name} has {player1.life_points} life points remaining.")
             print("")
-            if player1.life_points <= 50 and active_message is None:
+            if player1.life_points <= 50 and not dialogue_triggered:
                 dialogue_active = True
-                active_message = 0
+                active_message = 1
                 counter = 0
+                dialogue_triggered = True
         # Switch to player 1's turn after player 2's turn
         player1_turn = True
 
