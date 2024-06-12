@@ -87,7 +87,11 @@ class Player:
         self.skill_deck = []
         self.hand = []
         self.life_points = 100
+<<<<<<< HEAD
         self.initial_life_points = 100
+=======
+        self.initial_life_points =80
+>>>>>>> main
         self.additional_play = False  # Flag to allow an additional card play
         self.half_next_attack = False  # Flag to indicate if the next attack should be halved
         self.aggressiveness = aggressiveness
