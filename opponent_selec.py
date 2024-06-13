@@ -71,7 +71,7 @@ while run:
         print('EXIT')
 
     if bomoh1_btn.draw(screen):
-        pygame.mixer.music.load("bomoh1 sound(1).mp3")
+        pygame.mixer.music.load("Sound/bomoh1 sound(1).mp3")
         pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(0)
         while pygame.mixer.music.get_busy():  # Wait for music to finish playing
@@ -81,7 +81,7 @@ while run:
         print('OPEN bomoh1.py')
 
     if bomoh2_btn.draw(screen):
-        pygame.mixer.music.load("bomoh2 sound.mp3")
+        pygame.mixer.music.load("Sound/bomoh2 sound.mp3")
         pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(0)
         while pygame.mixer.music.get_busy():  # Wait for music to finish playing
@@ -91,7 +91,7 @@ while run:
         print('OPEN bomoh2.py')
 
     if bomoh3_btn.draw(screen):
-        pygame.mixer.music.load("bomoh3 sound.mp3")
+        pygame.mixer.music.load("Sound/bomoh3 sound.mp3")
         pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(0)
         while pygame.mixer.music.get_busy():  # Wait for music to finish playing
@@ -101,7 +101,7 @@ while run:
         print('OPEN bomoh3.py')
 
     if bomoh4_btn.draw(screen):
-        pygame.mixer.music.load("bomoh4 sound.mp3")
+        pygame.mixer.music.load("Sound/bomoh4 sound.mp3")
         pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(0)
         while pygame.mixer.music.get_busy():  # Wait for music to finish playing
