@@ -17,6 +17,9 @@ SCREEN_HEIGHT = 810
 pygame.mixer.pre_init(44100, 16, 2, 4096)
 pygame.init()
 
+# Load sound effects
+sound_cardplay = pygame.mixer.Sound('assets/sound_cardplay.mp3')
+
 #Play background music
 pygame.mixer.music.load("combat page background sound.mp3")
 pygame.mixer.music.set_volume(10)
@@ -152,6 +155,9 @@ class Player:
             print(f"Playing card: {card.name}")
             print(f"Initial attack points: {attack_points}")
             print(f"Opponent's half_next_attack flag: {opponent.half_next_attack}")
+
+            # Play sound effect
+            sound_cardplay.play()
 
             # Apply halving effect if the flag is set
             if self.half_next_attack:
