@@ -29,7 +29,7 @@ pygame.mixer.music.play(-1)
 dialogue_font = pygame.font.Font('GOODDC__.TTF', 40)
 
 #Background
-background = pygame.image.load('assets/bomoh1_bg.jpg')
+background = pygame.image.load('assets/bomoh4_bg.jpg')
 scale_bg = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Dialogue

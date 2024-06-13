@@ -17,10 +17,6 @@ pygame.init()
 background = pygame.image.load('assets/lose_bg.jpg')
 scale_bg = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-#load button images
-back_img = pygame.image.load('back-removebg-preview.png').convert_alpha()
-retry_img = pygame.image.load('retry_button-removebg-preview.png').convert_alpha()
-
 #available fonts
 btn_font = pygame.font.Font("assets/Daydream.ttf", 60)
 text_font = pygame.font.Font("GOODDC__.TTF", 200)
