@@ -206,14 +206,31 @@ class Player:
 
 
 
-    def ai_play(self, opponent):
+    def ai_play_easy(self, opponent):
         if self.hand:
-            # Improve AI strategy by choosing the most effective card
-            if self.aggressiveness >= 1.0:
-                card_index = max(range(len(self.hand)), key=lambda i: self.hand[i].attack)
-            else:
-                card_index = random.randint(0, len(self.hand) - 1)
+            card_index = random.randint(0, len(self.hand) - 1)
             return self.play_card(card_index, opponent)
+        return None
+
+    def ai_play_medium(self, opponent):
+        if self.hand:
+            card_index = random.choice([random.randint(0, len(self.hand) - 1), max(range(len(self.hand)), key=lambda i: self.hand[i].attack)])
+            return self.play_card(card_index, opponent)
+        return None
+
+    def ai_play_hard(self, opponent):
+        if self.hand:
+            best_card_index = max(range(len(self.hand)), key=lambda i: self.hand[i].attack + (self.hand[i].defense if self.hand[i].name.endswith('(skill)') else 0))
+            return self.play_card(best_card_index, opponent)
+        return None
+
+    def ai_play(self, opponent, difficulty="medium"):
+        if difficulty == "easy":
+            return self.ai_play_easy(opponent)
+        elif difficulty == "medium":
+            return self.ai_play_medium(opponent)
+        elif difficulty == "hard":
+            return self.ai_play_hard(opponent)
         return None
 
 # Create display window
@@ -307,6 +324,7 @@ def render_dialogue(message, counter, speed):
 running = True
 turn_counter = 0  # Initialize turn counter
 player1_turn = True
+difficulty_level = "hard"
 
 while running:
 
@@ -407,13 +425,19 @@ while running:
             running = False
 
     # AI player's turn
-    if not player1_turn and not dialogue_active:  # Only let AI play after player 1's turn and all cards have been drawn
-        played_card = player2.ai_play(player1)
+    if not player1_turn and not dialogue_active:
+        # If player 1 wins
+        if player2.life_points <= 0:
+            pygame.quit()
+            call(('python', 'win.py'))
+
+        played_card = player2.ai_play(player1, difficulty=difficulty_level)
         if played_card:
             print("")
             print(f"{player2.name} plays {played_card.name}.")
             print(f"{player1.name} has {player1.life_points} life points remaining.")
             print("")
+            
             if player1.life_points <= 50 and not dialogue_triggered:
                 dialogue_active = True
                 active_message = 0

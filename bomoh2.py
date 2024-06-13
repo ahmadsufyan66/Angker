@@ -205,7 +205,6 @@ class Player:
         return None
 
 
-
     def ai_play_easy(self, opponent):
         if self.hand:
             card_index = random.randint(0, len(self.hand) - 1)
@@ -437,11 +436,13 @@ while running:
             print(f"{player2.name} plays {played_card.name}.")
             print(f"{player1.name} has {player1.life_points} life points remaining.")
             print("")
+
             if player1.life_points <= 50 and not dialogue_triggered:
                 dialogue_active = True
                 active_message = 0
                 counter = 0
                 dialogue_triggered = True
+                
         # Switch to player 1's turn after player 2's turn
         player1_turn = True
 
