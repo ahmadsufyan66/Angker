@@ -4,7 +4,7 @@ import pygame
 # Initialize Pygame
 pygame.init()
 
-import pygame.time
+import time
 import sys
 import random
 from subprocess import call
@@ -197,6 +197,11 @@ class Player:
                 opponent.half_next_attack = True  # Set the flag for halving the next attack
                 print(f"Set opponent's half_next_attack flag to: {opponent.half_next_attack}")
 
+            elif card.name == "Toyol (skill)":
+                print(f"{opponent.name}'s next attack will be halved!")
+                opponent.half_next_attack = True  # Set the flag for halving the next attack
+                print(f"Set opponent's half_next_attack flag to: {opponent.half_next_attack}")
+
             elif card.name == "Pontianak (skill)":
                 print(f"{self.name} gains another turn!")
                 self.additional_play = True
@@ -245,32 +250,34 @@ player2 = Player("Player 2", False, 80, aggressiveness=0.5,)  # ai
 rect_1 = pygame.Rect(0, 170, SCREEN_WIDTH, 490)
 
 # Load card images
-card_images = ["card_images/kappa.png", "card_images/pocong.png", "card_images/freddykrueger.png", "card_images/saka.png", "card_images/pontianak.png",
-               "card_images/skill_kappa.png", "card_images/skill_pocong.png", "card_images/skill_freddykrueger.png", "card_images/skill_saka.png", "card_images/skill_pontianak.png"]
+card_images = ["card_images/kappa.png", "card_images/pocong.png", "card_images/freddykrueger.png", "card_images/saka.png", "card_images/pontianak.png", "card_images/toyol.png",
+               "card_images/skill_kappa.png", "card_images/skill_pocong.png", "card_images/skill_freddykrueger.png", "card_images/skill_saka.png", "card_images/skill_pontianak.png", "card_images/skill_toyol.png"]
 
 # Customize attack and defense for each card
 cards_data = [
-    {"name": "Kappa", "attack": 15, "defense": 5, "image": card_images[0]},  # Increase attack to 15 and lower defense to 5
-    {"name": "Pocong", "attack": 13, "defense": 7, "image": card_images[1]},  # Increase attack to 13 and lower defense to 7
-    {"name": "Freddy Krueger", "attack": 14, "defense": 8, "image": card_images[2]},  # Increase attack to 14 and lower defense to 8
-    {"name": "Saka", "attack": 12, "defense": 6, "image": card_images[3]},  # Increase attack to 12 and lower defense to 6
-    {"name": "Pontianak", "attack": 16, "defense": 9, "image": card_images[4]},  # Increase attack to 16 and lower defense to 9
-    {"name": "Kappa (skill)", "attack": 15, "defense": 5, "image": card_images[5]},  # Increase attack to 14 and lower defense to 5
-    {"name": "Pocong (skill)", "attack": 13, "defense": 7, "image": card_images[6]},  # Increase attack to 15 and lower defense to 7
-    {"name": "Freddy Krueger (skill)", "attack": 14, "defense": 8, "image": card_images[7]},  # Increase attack to 14 and lower defense to 8
-    {"name": "Saka (skill)", "attack": 12, "defense": 6, "image": card_images[8]},  # Increase attack to 13 and lower defense to 6
-    {"name": "Pontianak (skill)", "attack": 16, "defense": 9, "image": card_images[9]}  # Increase attack to 16 and lower defense to 9
+    {"name": "Kappa", "attack": 15, "defense": 5, "image": card_images[0]},
+    {"name": "Pocong", "attack": 13, "defense": 7, "image": card_images[1]},
+    {"name": "Freddy Krueger", "attack": 14, "defense": 8, "image": card_images[2]},
+    {"name": "Saka", "attack": 12, "defense": 6, "image": card_images[3]},
+    {"name": "Pontianak", "attack": 16, "defense": 9, "image": card_images[4]},
+    {"name": "Toyol", "attack": 13, "defense": 7, "image": card_images[5]},
+    {"name": "Kappa (skill)", "attack": 15, "defense": 5, "image": card_images[6]},
+    {"name": "Pocong (skill)", "attack": 13, "defense": 7, "image": card_images[7]},
+    {"name": "Freddy Krueger (skill)", "attack": 14, "defense": 8, "image": card_images[8]},
+    {"name": "Saka (skill)", "attack": 12, "defense": 6, "image": card_images[9]},
+    {"name": "Pontianak (skill)", "attack": 16, "defense": 9, "image": card_images[10]},
+    {"name": "Toyol (skill)", "attack": 13, "defense": 7, "image": card_images[11]}
 ]
 
 
 
 # Populate decks with custom cards
-for card_data in cards_data[0:5]:
+for card_data in cards_data[0:6]:
     player1.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("trigger_effect")))
     player2.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("trigger_effect")))
 
 #Populate skill card decks
-for card_data in cards_data[5:]:
+for card_data in cards_data[6:]:
     player1.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
     player2.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
 
@@ -426,10 +433,11 @@ while running:
 
     # AI player's turn
     if not player1_turn and not dialogue_active:
+        pygame.time.wait(500) # Pause for 0.5 second
         # If player 1 wins
         if player2.life_points <= 0:
             pygame.quit()
-            call(('python', 'win.py'))
+            call(('python', 'win1.py'))
 
         played_card = player2.ai_play(player1, difficulty=difficulty_level)
         if played_card:
@@ -477,12 +485,12 @@ while running:
     # If player 1 wins
     if player2.life_points <= 0:
         pygame.quit()
-        call(('python', 'win.py'))
+        call(('python', 'win1.py'))
 
     # If player 1 loses
     if player1.life_points <= 0:
         pygame.quit()
-        call(('python', 'lose.py'))
+        call(('python', 'lose1.py'))
 
     pygame.display.flip()
     
