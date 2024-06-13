@@ -36,7 +36,7 @@ def draw_text(text, font, text_col, x, y):
     screen.blit(img, text_rect)
 
 #Play background music
-pygame.mixer.music.load("y2mate.com - Josukes Theme but its lofi hiphop.mp3")
+pygame.mixer.music.load("Sound/y2mate.com - Josukes Theme but its lofi hiphop.mp3")
 pygame.mixer.music.set_volume(0.5)
 pygame.mixer.music.play(-1)
 
