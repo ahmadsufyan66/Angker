@@ -21,7 +21,7 @@ pygame.init()
 sound_cardplay = pygame.mixer.Sound('Sound/sound_cardplay.mp3')
 
 #Play background music
-pygame.mixer.music.load("combat page background sound.mp3")
+pygame.mixer.music.load("Sound/combat page background sound.mp3")
 pygame.mixer.music.set_volume(10)
 pygame.mixer.music.play(-1)
 
