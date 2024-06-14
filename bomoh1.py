@@ -4,7 +4,7 @@ import pygame
 # Initialize Pygame
 pygame.init()
 
-import pygame.time
+import time
 import sys
 import random
 from subprocess import call
@@ -12,6 +12,18 @@ from subprocess import call
 # Screen dimensions
 SCREEN_WIDTH = 1535
 SCREEN_HEIGHT = 810
+
+#Background music 
+pygame.mixer.pre_init(44100, 16, 2, 4096)
+pygame.init()
+
+# Load sound effects
+sound_cardplay = pygame.mixer.Sound('Sound/sound_cardplay.mp3')
+
+#Play background music
+pygame.mixer.music.load("Sound/combat page background sound.mp3")
+pygame.mixer.music.set_volume(10)
+pygame.mixer.music.play(-1)
 
 # Font
 dialogue_font = pygame.font.Font('GOODDC__.TTF', 40)
@@ -35,6 +47,7 @@ speed = 3
 active_message = None
 done = False
 dialogue_active = False
+dialogue_triggered = False
 
 
 # Define colors
@@ -143,6 +156,9 @@ class Player:
             print(f"Initial attack points: {attack_points}")
             print(f"Opponent's half_next_attack flag: {opponent.half_next_attack}")
 
+            # Play sound effect
+            sound_cardplay.play()
+
             # Apply halving effect if the flag is set
             if self.half_next_attack:
                 attack_points //= 2
@@ -181,6 +197,11 @@ class Player:
                 opponent.half_next_attack = True  # Set the flag for halving the next attack
                 print(f"Set opponent's half_next_attack flag to: {opponent.half_next_attack}")
 
+            elif card.name == "Toyol (skill)":
+                print(f"{opponent.name}'s next attack will be halved!")
+                opponent.half_next_attack = True  # Set the flag for halving the next attack
+                print(f"Set opponent's half_next_attack flag to: {opponent.half_next_attack}")
+
             elif card.name == "Pontianak (skill)":
                 print(f"{self.name} gains another turn!")
                 self.additional_play = True
@@ -190,14 +211,31 @@ class Player:
 
 
 
-    def ai_play(self, opponent):
+    def ai_play_easy(self, opponent):
         if self.hand:
-            # Improve AI strategy by choosing the most effective card
-            if self.aggressiveness >= 1.0:
-                card_index = max(range(len(self.hand)), key=lambda i: self.hand[i].attack)
-            else:
-                card_index = random.randint(0, len(self.hand) - 1)
+            card_index = random.randint(0, len(self.hand) - 1)
             return self.play_card(card_index, opponent)
+        return None
+
+    def ai_play_medium(self, opponent):
+        if self.hand:
+            card_index = random.choice([random.randint(0, len(self.hand) - 1), max(range(len(self.hand)), key=lambda i: self.hand[i].attack)])
+            return self.play_card(card_index, opponent)
+        return None
+
+    def ai_play_hard(self, opponent):
+        if self.hand:
+            best_card_index = max(range(len(self.hand)), key=lambda i: self.hand[i].attack + (self.hand[i].defense if self.hand[i].name.endswith('(skill)') else 0))
+            return self.play_card(best_card_index, opponent)
+        return None
+
+    def ai_play(self, opponent, difficulty="medium"):
+        if difficulty == "easy":
+            return self.ai_play_easy(opponent)
+        elif difficulty == "medium":
+            return self.ai_play_medium(opponent)
+        elif difficulty == "hard":
+            return self.ai_play_hard(opponent)
         return None
 
 # Create display window
@@ -212,32 +250,34 @@ player2 = Player("Player 2", False, 80, aggressiveness=0.5,)  # ai
 rect_1 = pygame.Rect(0, 170, SCREEN_WIDTH, 490)
 
 # Load card images
-card_images = ["card_images/kappa.png", "card_images/pocong.png", "card_images/freddykrueger.png", "card_images/saka.png", "card_images/pontianak.png",
-               "card_images/skill_kappa.png", "card_images/skill_pocong.png", "card_images/skill_freddykrueger.png", "card_images/skill_saka.png", "card_images/skill_pontianak.png"]
+card_images = ["card_images/kappa.png", "card_images/pocong.png", "card_images/freddykrueger.png", "card_images/saka.png", "card_images/pontianak.png", "card_images/toyol.png",
+               "card_images/skill_kappa.png", "card_images/skill_pocong.png", "card_images/skill_freddykrueger.png", "card_images/skill_saka.png", "card_images/skill_pontianak.png", "card_images/skill_toyol.png"]
 
 # Customize attack and defense for each card
 cards_data = [
-    {"name": "Kappa", "attack": 15, "defense": 5, "image": card_images[0]},  # Increase attack to 15 and lower defense to 5
-    {"name": "Pocong", "attack": 13, "defense": 7, "image": card_images[1]},  # Increase attack to 13 and lower defense to 7
-    {"name": "Freddy Krueger", "attack": 14, "defense": 8, "image": card_images[2]},  # Increase attack to 14 and lower defense to 8
-    {"name": "Saka", "attack": 12, "defense": 6, "image": card_images[3]},  # Increase attack to 12 and lower defense to 6
-    {"name": "Pontianak", "attack": 16, "defense": 9, "image": card_images[4]},  # Increase attack to 16 and lower defense to 9
-    {"name": "Kappa (skill)", "attack": 15, "defense": 5, "image": card_images[5]},  # Increase attack to 14 and lower defense to 5
-    {"name": "Pocong (skill)", "attack": 13, "defense": 7, "image": card_images[6]},  # Increase attack to 15 and lower defense to 7
-    {"name": "Freddy Krueger (skill)", "attack": 14, "defense": 8, "image": card_images[7]},  # Increase attack to 14 and lower defense to 8
-    {"name": "Saka (skill)", "attack": 12, "defense": 6, "image": card_images[8]},  # Increase attack to 13 and lower defense to 6
-    {"name": "Pontianak (skill)", "attack": 16, "defense": 9, "image": card_images[9]}  # Increase attack to 16 and lower defense to 9
+    {"name": "Kappa", "attack": 15, "defense": 5, "image": card_images[0]},
+    {"name": "Pocong", "attack": 13, "defense": 7, "image": card_images[1]},
+    {"name": "Freddy Krueger", "attack": 14, "defense": 8, "image": card_images[2]},
+    {"name": "Saka", "attack": 12, "defense": 6, "image": card_images[3]},
+    {"name": "Pontianak", "attack": 16, "defense": 9, "image": card_images[4]},
+    {"name": "Toyol", "attack": 13, "defense": 7, "image": card_images[5]},
+    {"name": "Kappa (skill)", "attack": 15, "defense": 5, "image": card_images[6]},
+    {"name": "Pocong (skill)", "attack": 13, "defense": 7, "image": card_images[7]},
+    {"name": "Freddy Krueger (skill)", "attack": 14, "defense": 8, "image": card_images[8]},
+    {"name": "Saka (skill)", "attack": 12, "defense": 6, "image": card_images[9]},
+    {"name": "Pontianak (skill)", "attack": 16, "defense": 9, "image": card_images[10]},
+    {"name": "Toyol (skill)", "attack": 13, "defense": 7, "image": card_images[11]}
 ]
 
 
 
 # Populate decks with custom cards
-for card_data in cards_data[0:5]:
+for card_data in cards_data[0:6]:
     player1.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("trigger_effect")))
     player2.deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"], card_data.get("trigger_effect")))
 
 #Populate skill card decks
-for card_data in cards_data[5:]:
+for card_data in cards_data[6:]:
     player1.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
     player2.skill_deck.append(Card(card_data["name"], card_data["attack"], card_data["defense"], card_data["image"]))
 
@@ -291,6 +331,7 @@ def render_dialogue(message, counter, speed):
 running = True
 turn_counter = 0  # Initialize turn counter
 player1_turn = True
+difficulty_level = "easy"
 
 while running:
 
@@ -373,10 +414,11 @@ while running:
                             print(f"{player1.name} plays {played_card.name}.")
                             print(f"{player2.name} has {player2.life_points} life points remaining.")
                             print("")
-                            if player2.life_points <= 50 and active_message is None:
+                            if player2.life_points <= 50 and not dialogue_triggered:
                                 dialogue_active = True
                                 active_message = 1
                                 counter = 0
+                                dialogue_triggered = True
                         # Check if player can play another card
                         if player1.additional_play:
                             player1_turn = True  # Allow player 1 to play another card
@@ -390,17 +432,26 @@ while running:
             running = False
 
     # AI player's turn
-    if not player1_turn and not dialogue_active:  # Only let AI play after player 1's turn and all cards have been drawn
-        played_card = player2.ai_play(player1)
+    if not player1_turn and not dialogue_active:
+        pygame.time.wait(500) # Pause for 0.5 second
+        # If player 1 wins
+        if player2.life_points <= 0:
+            pygame.quit()
+            call(('python', 'win1.py'))
+
+        played_card = player2.ai_play(player1, difficulty=difficulty_level)
         if played_card:
             print("")
             print(f"{player2.name} plays {played_card.name}.")
             print(f"{player1.name} has {player1.life_points} life points remaining.")
             print("")
-            if player1.life_points <= 50 and active_message is None:
+
+            if player1.life_points <= 50 and not dialogue_triggered:
                 dialogue_active = True
                 active_message = 0
                 counter = 0
+                dialogue_triggered = True
+                
         # Switch to player 1's turn after player 2's turn
         player1_turn = True
 
@@ -424,22 +475,22 @@ while running:
     draw_life_scale(screen, player1, 50, SCREEN_HEIGHT - 80)
     draw_life_scale(screen, player2, 50, 30)
 
-    # Draw dialogue if active
     if dialogue_active and active_message is not None:
         snip, counter = render_dialogue(messages[active_message], counter, speed)
-        screen.blit(snip, (50, SCREEN_HEIGHT - 100))
+        text_rect = snip.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+        screen.blit(snip, text_rect.topleft)
         if counter // speed >= len(messages[active_message]):
             done = True
 
     # If player 1 wins
     if player2.life_points <= 0:
         pygame.quit()
-        call(('python', 'win.py'))
+        call(('python', 'win1.py'))
 
     # If player 1 loses
     if player1.life_points <= 0:
         pygame.quit()
-        call(('python', 'lose.py'))
+        call(('python', 'lose1.py'))
 
     pygame.display.flip()
     

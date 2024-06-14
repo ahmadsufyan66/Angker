@@ -49,10 +49,6 @@ bomoh2_btn = button.Button(560, 420, bomoh2_img, bomoh2_hover_img, 0.5)
 bomoh3_btn = button.Button(840, 220, bomoh3_img, bomoh3_hover_img, 0.5)
 bomoh4_btn = button.Button(1120, 420, bomoh4_img, bomoh4_hover_img, 0.5)
 
-#Play background music
-pygame.mixer.music.load("y2mate.com - Button Press   Sound Effect Free No Copyright.mp3")
-pygame.mixer.music.set_volume(1.5)
-
 #game loop
 run = True
 while run:
@@ -75,33 +71,41 @@ while run:
         print('EXIT')
 
     if bomoh1_btn.draw(screen):
+        pygame.mixer.music.load("Sound/bomoh1 sound(1).mp3")
+        pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(0)
         while pygame.mixer.music.get_busy():  # Wait for music to finish playing
-          pygame.time.Clock().tick(10)  # Control the loop's speed
+          pygame.time.Clock().tick(0.9)  # Control the loop's speed
         pygame.quit()
         call(('python', "bomoh1.py"))
         print('OPEN bomoh1.py')
 
     if bomoh2_btn.draw(screen):
+        pygame.mixer.music.load("Sound/bomoh2 sound.mp3")
+        pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(0)
         while pygame.mixer.music.get_busy():  # Wait for music to finish playing
-          pygame.time.Clock().tick(10)  # Control the loop's speed
+          pygame.time.Clock().tick(0.9)  # Control the loop's speed
         pygame.quit()
         call(('python', "bomoh2.py"))
         print('OPEN bomoh2.py')
 
     if bomoh3_btn.draw(screen):
+        pygame.mixer.music.load("Sound/bomoh3 sound.mp3")
+        pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(0)
         while pygame.mixer.music.get_busy():  # Wait for music to finish playing
-          pygame.time.Clock().tick(10)  # Control the loop's speed
+          pygame.time.Clock().tick(0.9)  # Control the loop's speed
         pygame.quit()
         call(('python', "bomoh3.py"))
         print('OPEN bomoh3.py')
 
     if bomoh4_btn.draw(screen):
+        pygame.mixer.music.load("Sound/bomoh4 sound.mp3")
+        pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(0)
         while pygame.mixer.music.get_busy():  # Wait for music to finish playing
-          pygame.time.Clock().tick(10)  # Control the loop's speed
+          pygame.time.Clock().tick(0.9)  # Control the loop's speed
         pygame.quit()
         call(('python', "bomoh4.py"))
         print('OPEN bomoh4.py')
