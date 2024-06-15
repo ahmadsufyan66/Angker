@@ -209,34 +209,22 @@ class Player:
             return card
         return None
 
+    # AI decision making algorithm 
+    def ai_play(self, opponent):
+        if not self.hand:
+            return None
 
+        # Calculate the probability threshold for choosing the highest attack card
+        threshold = 1 / self.aggressiveness
 
-    def ai_play_easy(self, opponent):
-        if self.hand:
+        if random.random() < threshold:
+            # Choice 1: Play a random card from the hand
             card_index = random.randint(0, len(self.hand) - 1)
-            return self.play_card(card_index, opponent)
-        return None
+        else:
+            # Choice 2: Play the card with the highest attack value
+            card_index = max(range(len(self.hand)), key=lambda i: self.hand[i].attack)
 
-    def ai_play_medium(self, opponent):
-        if self.hand:
-            card_index = random.choice([random.randint(0, len(self.hand) - 1), max(range(len(self.hand)), key=lambda i: self.hand[i].attack)])
-            return self.play_card(card_index, opponent)
-        return None
-
-    def ai_play_hard(self, opponent):
-        if self.hand:
-            best_card_index = max(range(len(self.hand)), key=lambda i: self.hand[i].attack + (self.hand[i].defense if self.hand[i].name.endswith('(skill)') else 0))
-            return self.play_card(best_card_index, opponent)
-        return None
-
-    def ai_play(self, opponent, difficulty="medium"):
-        if difficulty == "easy":
-            return self.ai_play_easy(opponent)
-        elif difficulty == "medium":
-            return self.ai_play_medium(opponent)
-        elif difficulty == "hard":
-            return self.ai_play_hard(opponent)
-        return None
+        return self.play_card(card_index, opponent)
 
 # Create display window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -331,7 +319,6 @@ def render_dialogue(message, counter, speed):
 running = True
 turn_counter = 0  # Initialize turn counter
 player1_turn = True
-difficulty_level = "medium"
 
 while running:
 
@@ -439,7 +426,7 @@ while running:
             pygame.quit()
             call(('python', 'win3.py'))
 
-        played_card = player2.ai_play(player1, difficulty=difficulty_level)
+        played_card = player2.ai_play(player1)
         if played_card:
             print("")
             print(f"{player2.name} plays {played_card.name}.")
