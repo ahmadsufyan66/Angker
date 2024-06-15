@@ -2,13 +2,13 @@
 
 Hello fellas, in this page, we are going to introduce you a simple instruction and tutorial regarding on how to play the game!
 
-#### EVERY BOMOH HAVE THEIR DIFFERENT AGGRESSIVENESS ####
+#### EVERY BOMOH HAVE DIFFERENT AGGRESSIVENESS ####
      -Normal 
      -Medium
      -High
 
 ![Reference](/assets/Screenshot_1.png)
-The bomoh will starts to become more aggressive form the left to right side.
+The bomoh will start to become more aggressive form the left to right side.
 
 ### GAME MECHANICS ###
 1. There are two types of cards. **Normal cards** and **skill cards**
@@ -18,7 +18,10 @@ The bomoh will starts to become more aggressive form the left to right side.
 5. Utilise every skill cards and plan your strategy well.
 6. Lastly, dont forget to have fun!
 
+
+Check out our official itch.io page!
 https://soupyn.itch.io/angker
+
 
 ### IMPORTANT NOTICE ##
 Download and install Instructions
