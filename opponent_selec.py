@@ -3,6 +3,7 @@ import pygame
 # Initialize Pygame
 pygame.init()
 
+import sys
 import button
 from subprocess import call
 
@@ -12,7 +13,6 @@ SCREEN_WIDTH = 1535
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Angker')
-pygame.init()
 
 #Background
 background = pygame.image.load('assets/oppsel_bg.jpg')
@@ -20,7 +20,6 @@ scale_bg = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 #Background sound
 pygame.mixer.pre_init(44100, 16, 2, 4096)
-pygame.init()
 
 #title
 text_font = pygame.font.Font("GOODDC__.TTF", 200)
@@ -121,3 +120,4 @@ while run:
     pygame.display.update()
 
 pygame.quit()
+sys.exit()
