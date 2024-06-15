@@ -1,5 +1,6 @@
 import pygame
 pygame.init()
+import sys
 import button
 from subprocess import call
 
@@ -55,13 +56,15 @@ while run:
         print('BACK')
         pygame.mixer.music.stop()
         pygame.quit()
-        call (('python', 'opponent_selec.py'))
+        call(('python', 'opponent_selec.py'))
+        sys.exit()
 
     if retry_button.draw(screen):
         print('RETRY')
         pygame.mixer.music.stop()
         pygame.quit()
-        call (('python', 'bomoh2.py'))
+        call(('python', 'bomoh2.py'))
+        sys.exit()
 
     #event handler
     for event in pygame.event.get():
@@ -72,3 +75,4 @@ while run:
     pygame.display.update()
 
 pygame.quit()
+sys.exit()

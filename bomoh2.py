@@ -288,6 +288,7 @@ while running:
         if player2.life_points <= 0:
             pygame.quit()
             call(('python', 'win2.py'))
+            sys.exit()
 
         played_card = player2.ai_play(player1)
         if played_card:
@@ -336,14 +337,17 @@ while running:
     if player2.life_points <= 0:
         pygame.quit()
         call(('python', 'win2.py'))
+        sys.exit()
 
     # If player 1 loses
     if player1.life_points <= 0:
         pygame.quit()
         call(('python', 'lose2.py'))
+        sys.exit()
 
     pygame.display.flip()
     
 
 # Quit Pygame
 pygame.quit()
+sys.exit()
