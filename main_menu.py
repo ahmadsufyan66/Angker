@@ -54,7 +54,7 @@ while run:
 
     draw_text("ANGKER", text_font, (255, 0, 0), 400, 600)
 
-
+     
     if start_btn.draw(screen):
         print('START')
         pygame.quit()  # Cleanly exit Pygame
@@ -73,6 +73,7 @@ while run:
             run = False
 
     pygame.display.update()
+    
 
 pygame.quit()
 sys.exit()
