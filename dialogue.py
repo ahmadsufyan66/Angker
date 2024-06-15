@@ -1,11 +1,11 @@
 import pygame
+pygame.init()
 
 def draw_text():
     screen.fill('dark grey')
     timer.tick(60)
     pygame.draw.rect(screen, 'black', [300, 600, 1065, 200])
 
-pygame.init()
 font = pygame.font.Font('GOODDC__.TTF', 40)
 screen = pygame.display.set_mode ([1680, 1050])
 timer = pygame.time.Clock()

@@ -1,4 +1,5 @@
 import pygame
+pygame.init()
 import button
 from subprocess import call
 
@@ -7,11 +8,9 @@ SCREEN_WIDTH , SCREEN_HEIGHT = 1680, 1050
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Angker')
-pygame.init()
 
 #Background music 
 pygame.mixer.pre_init(44100, 16, 2, 4096)
-pygame.init()
 
 #Background
 background = pygame.image.load('assets/win_bg.jpg')
