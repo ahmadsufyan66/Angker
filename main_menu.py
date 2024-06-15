@@ -1,4 +1,10 @@
 import pygame
+
+print("Initializing Pygame...")
+pygame.init()
+print("Pygame initialized.")
+
+import sys
 import button
 from subprocess import call
 
@@ -7,11 +13,9 @@ SCREEN_WIDTH , SCREEN_HEIGHT = 1680, 1050
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Angker')
-pygame.init()
 
 #Background music 
 pygame.mixer.pre_init(44100, 16, 2, 4096)
-pygame.init()
 
 #Background
 background = pygame.image.load('assets/mainmenu_bg.jpg')
@@ -53,14 +57,14 @@ while run:
      
     if start_btn.draw(screen):
         print('START')
-        #pygame.mixer.music.stop()
-        pygame.quit()
-        call (('python', 'opponent_selec.py'))
+        pygame.quit()  # Cleanly exit Pygame
+        call(('python', 'opponent_selec.py'))  # Start the new script
+        sys.exit()  # Exit the current script
 
     if exit_btn.draw(screen):
         print('EXIT')
         #pygame.mixer.music.stop()
-        pygame.quit()
+        run = False
 
     #event handler
     for event in pygame.event.get():
@@ -72,3 +76,4 @@ while run:
     
 
 pygame.quit()
+sys.exit()

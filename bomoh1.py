@@ -6,7 +6,7 @@ pygame.init()
 
 import time
 import sys
-import random
+import player
 from subprocess import call
 
 # Screen dimensions
@@ -16,9 +16,6 @@ SCREEN_HEIGHT = 810
 #Background music 
 pygame.mixer.pre_init(44100, 16, 2, 4096)
 pygame.init()
-
-# Load sound effects
-sound_cardplay = pygame.mixer.Sound('Sound/sound_cardplay.mp3')
 
 #Play background music
 pygame.mixer.music.load("Sound/combat page background sound.mp3")
@@ -92,159 +89,14 @@ class Card:
         surface.blit(self.image, self.rect)
             
 # Define Player class
-class Player:
-    def __init__(self, name, is_human, initial_life_points, aggressiveness=0.7):
-        self.name = name
-        self.is_human = is_human
-        self.deck = []
-        self.skill_deck = []
-        self.hand = []
-        self.life_points = 100
-        self.initial_life_points = 100
-        self.additional_play = False  # Flag to allow an additional card play
-        self.half_next_attack = False  # Flag to indicate if the next attack should be halved
-        self.aggressiveness = aggressiveness
-
-    def shuffle(self, num=1):
-        length = len(self.deck)
-        for _ in range(num):
-            for i in range(length-1, 0, -1):
-                randi = random.randint(0, i)
-                if i == randi:
-                    continue
-                self.deck[i], self.deck[randi] = self.deck[randi], self.deck[i]
-
-        #Shuffle skill card deck
-        length = len(self.skill_deck)
-        for _ in range(num):
-            # This is the fisher yates shuffle algorithm
-            for i in range(length-1, 0, -1):
-                randi = random.randint(0, i)
-                if i == randi:
-                    continue
-                self.skill_deck[i], self.skill_deck[randi] = self.skill_deck[randi], self.skill_deck[i]
-
-    def draw_cards(self):
-        # Count cards from deck and skill_deck in hand
-        normal_deck_count = sum(1 for card in self.hand if card not in self.skill_deck)
-        skill_deck_count = sum(1 for card in self.hand if card in self.skill_deck)
-
-        # Draw normal cards
-        if normal_deck_count == 0:
-            for _ in range(min(2, len(self.deck))):  # Ensure we don't draw more cards than available
-                if self.deck:
-                    self.hand.append(self.deck.pop())
-        elif normal_deck_count == 1:
-            if self.deck:
-                self.hand.append(self.deck.pop())
-        elif normal_deck_count == 2:
-            for _ in range(min(2, len(self.deck))):
-                if self.deck:
-                    self.hand.append(self.deck.pop())
-
-        # Draw skill cards
-        if skill_deck_count == 0:
-            if self.skill_deck:
-                self.hand.append(self.skill_deck.pop())
-
-
-    def play_card(self, card_index, opponent):
-        if 0 <= card_index < len(self.hand):
-            card = self.hand.pop(card_index)
-            attack_points = card.attack
-            print(f"Playing card: {card.name}")
-            print(f"Initial attack points: {attack_points}")
-            print(f"Opponent's half_next_attack flag: {opponent.half_next_attack}")
-
-            # Play sound effect
-            sound_cardplay.play()
-
-            # Apply halving effect if the flag is set
-            if self.half_next_attack:
-                attack_points //= 2
-                self.half_next_attack = False  # Reset the flag after applying the effect
-                print(f"Attack points after halving: {attack_points}")
-
-            # Update attack points if it's a Freddy Krueger (skill) card
-            if card.name == "Freddy Krueger (skill)":
-                lost_life_points = self.initial_life_points - self.life_points
-                attack_points += lost_life_points  # Increase attack based on lost life points
-                print(f"Freddy Krueger attack points with lost life points: {attack_points}")
-
-            # Update attack points if it's a Saka (skill) card
-            if card.name == "Saka (skill)":
-                lost_life_points = self.initial_life_points - self.life_points
-                attack_points += lost_life_points  # Increase attack based on lost life points
-                print(f"Saka attack points with lost life points: {attack_points}")
-
-
-            # Apply attack to opponent's life points
-            if attack_points > opponent.life_points + card.defense:
-                opponent.life_points = 0
-            else:
-                opponent.life_points -= attack_points
-
-            print(f"Opponent's remaining life points: {opponent.life_points}")
-
-            # Check for other card skills
-            if card.name == "Kappa (skill)":
-                print(f"{self.name} +10 HP")
-                self.life_points += 10
-                print(f"{self.name} has {self.life_points} remaining.")
-            
-            elif card.name == "Pocong (skill)":
-                print(f"{opponent.name}'s next attack will be halved!")
-                opponent.half_next_attack = True  # Set the flag for halving the next attack
-                print(f"Set opponent's half_next_attack flag to: {opponent.half_next_attack}")
-
-            elif card.name == "Toyol (skill)":
-                print(f"{opponent.name}'s next attack will be halved!")
-                opponent.half_next_attack = True  # Set the flag for halving the next attack
-                print(f"Set opponent's half_next_attack flag to: {opponent.half_next_attack}")
-
-            elif card.name == "Pontianak (skill)":
-                print(f"{self.name} gains another turn!")
-                self.additional_play = True
-
-            return card
-        return None
-
-
-
-    def ai_play_easy(self, opponent):
-        if self.hand:
-            card_index = random.randint(0, len(self.hand) - 1)
-            return self.play_card(card_index, opponent)
-        return None
-
-    def ai_play_medium(self, opponent):
-        if self.hand:
-            card_index = random.choice([random.randint(0, len(self.hand) - 1), max(range(len(self.hand)), key=lambda i: self.hand[i].attack)])
-            return self.play_card(card_index, opponent)
-        return None
-
-    def ai_play_hard(self, opponent):
-        if self.hand:
-            best_card_index = max(range(len(self.hand)), key=lambda i: self.hand[i].attack + (self.hand[i].defense if self.hand[i].name.endswith('(skill)') else 0))
-            return self.play_card(best_card_index, opponent)
-        return None
-
-    def ai_play(self, opponent, difficulty="medium"):
-        if difficulty == "easy":
-            return self.ai_play_easy(opponent)
-        elif difficulty == "medium":
-            return self.ai_play_medium(opponent)
-        elif difficulty == "hard":
-            return self.ai_play_hard(opponent)
-        return None
 
 # Create display window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('ANGKER')
 
 # Create players
-player1 = Player("Player 1", True, 100)  # human
-player2 = Player("Player 2", False, 80, aggressiveness=0.5,)  # ai
+player1 = player.Player("Player 1", True, 100)  # human
+player2 = player.Player("Player 2", False, 80, aggressiveness=0.5,)  # ai
 
 # Create attacking area
 rect_1 = pygame.Rect(0, 170, SCREEN_WIDTH, 490)
@@ -331,7 +183,6 @@ def render_dialogue(message, counter, speed):
 running = True
 turn_counter = 0  # Initialize turn counter
 player1_turn = True
-difficulty_level = "easy"
 
 while running:
 
@@ -438,8 +289,9 @@ while running:
         if player2.life_points <= 0:
             pygame.quit()
             call(('python', 'win1.py'))
+            sys.exit()
 
-        played_card = player2.ai_play(player1, difficulty=difficulty_level)
+        played_card = player2.ai_play(player1)
         if played_card:
             print("")
             print(f"{player2.name} plays {played_card.name}.")
@@ -486,14 +338,17 @@ while running:
     if player2.life_points <= 0:
         pygame.quit()
         call(('python', 'win1.py'))
+        sys.exit()
 
     # If player 1 loses
     if player1.life_points <= 0:
         pygame.quit()
         call(('python', 'lose1.py'))
+        sys.exit()
 
     pygame.display.flip()
     
 
 # Quit Pygame
 pygame.quit()
+sys.exit()

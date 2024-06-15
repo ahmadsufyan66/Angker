@@ -1,4 +1,6 @@
 import pygame
+pygame.init()
+import sys
 import button
 from subprocess import call
 
@@ -7,11 +9,9 @@ SCREEN_WIDTH , SCREEN_HEIGHT = 1680, 1050
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Angker')
-pygame.init()
 
 #Background music 
 pygame.mixer.pre_init(44100, 16, 2, 4096)
-pygame.init()
 
 #Background
 background = pygame.image.load('assets/lose_bg.jpg')
@@ -56,12 +56,14 @@ while run:
         pygame.mixer.music.stop()
         pygame.quit()
         call (('python', 'opponent_selec.py'))
+        sys.exit()
 
     if retry_button.draw(screen):
         print('RETRY')
         pygame.mixer.music.stop()
         pygame.quit()
         call (('python', 'bomoh2.py'))
+        sys.exit()
 
     #event handler
     for event in pygame.event.get():
@@ -72,3 +74,4 @@ while run:
     pygame.display.update()
 
 pygame.quit()
+sys.exit()

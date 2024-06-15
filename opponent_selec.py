@@ -3,6 +3,7 @@ import pygame
 # Initialize Pygame
 pygame.init()
 
+import sys
 import button
 from subprocess import call
 
@@ -12,7 +13,6 @@ SCREEN_WIDTH = 1535
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Angker')
-pygame.init()
 
 #Background
 background = pygame.image.load('assets/oppsel_bg.jpg')
@@ -20,7 +20,6 @@ scale_bg = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 #Background sound
 pygame.mixer.pre_init(44100, 16, 2, 4096)
-pygame.init()
 
 #title
 text_font = pygame.font.Font("GOODDC__.TTF", 200)
@@ -66,11 +65,14 @@ while run:
 
     #button click function
     if exit_btn.draw(screen):
+        print('EXIT')
         pygame.quit()
         call(('python', "main_menu.py"))
-        print('EXIT')
+        sys.exit()
+        
 
     if bomoh1_btn.draw(screen):
+        print('OPEN bomoh1.py')
         pygame.mixer.music.load("Sound/bomoh1 sound(1).mp3")
         pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(0)
@@ -78,9 +80,11 @@ while run:
           pygame.time.Clock().tick(0.9)  # Control the loop's speed
         pygame.quit()
         call(('python', "bomoh1.py"))
-        print('OPEN bomoh1.py')
+        sys.exit()
+        
 
     if bomoh2_btn.draw(screen):
+        print('OPEN bomoh2.py')
         pygame.mixer.music.load("Sound/bomoh2 sound.mp3")
         pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(0)
@@ -88,9 +92,11 @@ while run:
           pygame.time.Clock().tick(0.9)  # Control the loop's speed
         pygame.quit()
         call(('python', "bomoh2.py"))
-        print('OPEN bomoh2.py')
+        sys.exit()
+        
 
     if bomoh3_btn.draw(screen):
+        print('OPEN bomoh3.py')
         pygame.mixer.music.load("Sound/bomoh3 sound.mp3")
         pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(0)
@@ -98,9 +104,11 @@ while run:
           pygame.time.Clock().tick(0.9)  # Control the loop's speed
         pygame.quit()
         call(('python', "bomoh3.py"))
-        print('OPEN bomoh3.py')
+        sys.exit()
+        
 
     if bomoh4_btn.draw(screen):
+        print('OPEN bomoh4.py')
         pygame.mixer.music.load("Sound/bomoh4 sound.mp3")
         pygame.mixer.music.set_volume(1.0)
         pygame.mixer.music.play(0)
@@ -108,7 +116,8 @@ while run:
           pygame.time.Clock().tick(0.9)  # Control the loop's speed
         pygame.quit()
         call(('python', "bomoh4.py"))
-        print('OPEN bomoh4.py')
+        sys.exit()
+        
 
     #event handler
     for event in pygame.event.get():
@@ -121,3 +130,4 @@ while run:
     pygame.display.update()
 
 pygame.quit()
+sys.exit()
