@@ -19,3 +19,18 @@ The bomoh will starts to become more aggressive form the left to right side.
 6. Lastly, dont forget to have fun!
 
 https://soupyn.itch.io/angker
+
+### IMPORTANT NOTICE ##
+Download and install Instructions
+
+1. Download 'Angker.zip'
+
+2. Extract 'Angker.zip'
+
+3. Execute/Double click on 'main_menu.exe'
+
+4. Enjoy!
+
+IMPORTANT (please read it)
+
+Make sure to turn off MCAFEE or allow your PC to run the main_menu.exe file.  We can assure there are no harmful viruses :). (no really there's none)
