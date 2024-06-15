@@ -8,7 +8,7 @@ Hello fellas, in this page, we are going to introduce you a simple instruction a
      -High
 
 ![Reference](/assets/Screenshot_1.png)
-The aggressiveness starts from the left side of the bomoh which is normal, the next two in the middle are medium and the right side is high.
+The bomoh will starts to become more aggressive form the left to right side.
 
 ### GAME MECHANICS ###
 1. There are two types of cards. **Normal cards** and **skill cards**
