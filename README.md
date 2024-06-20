@@ -30,10 +30,11 @@ Download and install Instructions
 
 2. Extract 'Angker.zip'
 
-3. Execute/Double click on 'main_menu.exe'
+3. Turn off Windows Security's  Virus & Threat Protection.
+4. Execute/Double click on 'main_menu.exe'
 
-4. Enjoy!
+5. Enjoy!
 
 IMPORTANT (please read it)
 
-Make sure to turn off MCAFEE or allow your PC to run the main_menu.exe file.  We can assure there are no harmful viruses :). (no really there's none)
+Make sure to turn off real-time protection before running 'main_menu.exe' file.  If there's any doubt, you are welcome to turn it right on after executing 'main_menu.exe'. (no really there's none).  We can assure there are no harmful viruses :)​
